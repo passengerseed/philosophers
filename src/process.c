@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/10 18:33:20 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/10 19:54:05 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,3 +30,11 @@ int	switch_states(t_philosopher *philosopher, State new_state, int timestamp)
 	return (0);
 }
 
+void	*live(void *arg)
+{
+	t_philosopher	*philosopher;
+
+	philosopher = (t_philosopher *)arg;
+	printf("> created a thread for: %s\n", philosopher->name);
+	return (NULL);
+}

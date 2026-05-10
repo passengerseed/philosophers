@@ -6,41 +6,36 @@
 #    By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/10 15:54:28 by lrouchon          #+#    #+#              #
-#    Updated: 2026/05/10 15:55:08 by lrouchon         ###   ########.fr        #
+#    Updated: 2026/05/10 18:13:13 by lrouchon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g3
 
-LFLAGS =
-
 NAME = philosophers
 
 SRC_PATH = src/
 SRC = $(SRC_PATH)main.c \
-
-LIBS = libft/libft.a \
+	$(SRC_PATH)init.c \
+	$(SRC_PATH)process.c \
+	$(SRC_PATH)utils.c \
+	$(SRC_PATH)debug.c
 
 INCLUDES = $(SRC_PATH)philosophers.h
 
 OBJ = $(SRC:.c=.o)
 
-all: libs $(NAME)
-
-libs :
-	make -C libft/
+all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBS)
-	$(CC) $(CFLAGS) $(OBJ) $(LFLAGS) $(LIBS) -o $(NAME) -lm
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean:
 	rm -f $(OBJ)
-	make clean -C libft/
 
 fclean: clean
 	rm -f $(NAME)
-	make fclean -C libft/
 
 re: fclean all
 

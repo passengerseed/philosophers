@@ -8,7 +8,7 @@ void	print_table(t_philosopher *philosopher)
 	printf("--- TABLE: ----------------------------\n");
 	while (philosopher)
 	{
-		printf("> %s\n", philosopher->name);
+		printf("> %s	%lu\n", philosopher->name, philosopher->thread);
 		philosopher = philosopher->next;
 	}
 	printf("---------------------------------------\n");

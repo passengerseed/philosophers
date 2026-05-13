@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/10 19:54:55 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/13 18:16:45 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,25 @@ t_times	*init_times(const char **argv)
 	return (new_times);
 }
 
+// char	*generate_name(long unsigned *thread_id)
+// {
+// 	char	*new_name;
+// 	char	*syl_1[10] = {"Fe", "Pat", "Bla", "To", "Pi", "Tra", "Ti", "Gi", "Ple", "Pha"};
+// 	char	*syl_2[10] = {"plu", "tre", "flo", "cha", "dro", "cce", "lle", "po", "clo", "ter"};
+// 	char	*syl_3[10] = {"velle", "chil", "tard", "tosis", "bli", "tte", "chre", "sse", "nille", "asse"};
+// 	int		tmp1;
+// 	int		tmp2;
+// 	int		tmp3;
+
+// 	(void)syl_2;
+// 	(void)syl_3;
+// 	tmp1 = abs((*(int *)thread_id) / 1000 % 10);
+// 	tmp2 = abs((*(int *)thread_id) / 10000 % 10);
+// 	tmp3 = abs((*(int *)thread_id) / 100000 % 10);
+// 	new_name = syl_1[tmp_1];
+// 	return (new_name);
+// }
+
 t_philosopher	*init_philosopher(char *name, t_times *times)
 {
 	t_philosopher	*new_philosopher;
@@ -37,11 +56,13 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 	if (!new_fork)
 		return (free(new_philosopher), NULL);
 	pthread_create(&new_philosopher->thread, NULL, live, new_philosopher);
+	// new_philosopher->name = generate_name((long unsigned *)new_philosopher->thread);
 	new_philosopher->name = name;
 	new_philosopher->times = times;
 	new_philosopher->fork = new_fork;
 	new_philosopher->state = INIT;
-	pthread_join(new_philosopher->thread, NULL);
+	eat(new_philosopher);
+	// pthread_join(new_philosopher->thread, NULL);
 	return (new_philosopher);
 }
 
@@ -53,7 +74,7 @@ t_philosopher	*init_table(const char **argv, t_times *times)
 	new_table = NULL;
 	i = -1;
 	while (++i < ft_atoi(argv[1]))
-		table_add_back(&new_table, init_philosopher("Steve", times));
+		table_add_back(&new_table, init_philosopher("Soraya", times));
 	return (new_table);
 }
 

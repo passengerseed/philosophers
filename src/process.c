@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/10 19:54:05 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/13 14:48:07 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,17 @@ int	switch_states(t_philosopher *philosopher, State new_state, int timestamp)
 		return(error("couldn't change state"), -1);
 	philosopher->state = new_state;
 	return (0);
+}
+
+int	eat(t_philosopher *philosopher)
+{
+	int				status;
+	__useconds_t	time;
+
+	time = 2;
+	status = usleep(time);
+	printf("%s is done eating!\n", philosopher->name);
+	return (status);
 }
 
 void	*live(void *arg)

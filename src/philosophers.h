@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/13 17:01:19 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/16 16:56:38 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef enum state {
 }	State;
 
 typedef struct s_times {
+	int		philosopher_amount;
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
@@ -41,7 +42,8 @@ typedef struct s_philosopher {
 	char			*name;
 	t_times			*times;
 	State			state;
-	struct s_fork	*fork;
+	struct s_fork	*fork_left;
+	struct s_fork	*fork_right;
 	struct s_philosopher	*previous;
 	struct s_philosopher	*next;
 }	t_philosopher;
@@ -74,6 +76,8 @@ int				ft_atoi(const char *str);
 /* lst_utils.c */
 void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
 void			table_add_front(t_philosopher **table, t_philosopher *new_philosopher);
+t_philosopher	*table_last(t_philosopher *philosopher);
+
 
 /* debug.c */
 void			print_table(t_philosopher *philosopher);

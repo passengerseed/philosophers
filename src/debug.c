@@ -2,11 +2,16 @@
 
 void	print_table(t_philosopher *philosopher)
 {
+	int	i;
+	int	j;
+
+	i = -1;
+	j = philosopher->times->philosopher_amount;
 	printf("\n	TIME TO DIE:	%dms\n", philosopher->times->time_to_die);
 	printf("	TIME TO EAT:	%dms\n", philosopher->times->time_to_eat);
 	printf("	TIME TO SLEEP:	%dms\n\n", philosopher->times->time_to_sleep);
 	printf("--- TABLE: ----------------------------\n");
-	while (philosopher)
+	while (++i < j)
 	{
 		printf("> %s	%lu\n", philosopher->name, philosopher->thread);
 		philosopher = philosopher->next;

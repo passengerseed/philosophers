@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/13 14:48:07 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/16 16:54:54 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	switch_states(t_philosopher *philosopher, State new_state, int timestamp)
 {
-	if (new_state == EATING && philosopher->fork != NULL)
+	if (new_state == EATING && philosopher->fork_left != NULL && philosopher->fork_right != NULL)
 		printf("%d	%s %s\n", timestamp, philosopher->name, "is eating");
-	else if (new_state == EATING && philosopher->fork == NULL)
+	else if (new_state == EATING && (philosopher->fork_left != NULL || philosopher->fork_right != NULL))
 		return (printf("%d	%s %s\n", timestamp, philosopher->name, "tried to eat, but has no fork!"), -1);
 	else if (new_state == SLEEPING)
 		printf("%d	%s %s\n", timestamp, philosopher->name, "is sleeping");

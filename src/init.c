@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/13 18:16:45 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/16 16:57:12 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_times	*init_times(const char **argv)
 	new_times = malloc(sizeof(t_times));
 	if (!new_times)
 		return (NULL);
+	new_times->philosopher_amount = ft_atoi(argv[1]);
 	new_times->time_to_die = ft_atoi(argv[2]);
 	new_times->time_to_eat = ft_atoi(argv[3]);
 	new_times->time_to_sleep = ft_atoi(argv[4]);
@@ -59,7 +60,8 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 	// new_philosopher->name = generate_name((long unsigned *)new_philosopher->thread);
 	new_philosopher->name = name;
 	new_philosopher->times = times;
-	new_philosopher->fork = new_fork;
+	new_philosopher->fork_left = new_fork;
+	new_philosopher->fork_right = NULL;
 	new_philosopher->state = INIT;
 	eat(new_philosopher);
 	// pthread_join(new_philosopher->thread, NULL);
@@ -69,12 +71,17 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 t_philosopher	*init_table(const char **argv, t_times *times)
 {
 	t_philosopher	*new_table;
+	t_philosopher	*head;
 	int				i;
 
 	new_table = NULL;
 	i = -1;
 	while (++i < ft_atoi(argv[1]))
 		table_add_back(&new_table, init_philosopher("Soraya", times));
+	head = new_table;
+	new_table->previous = table_last(new_table);
+	new_table = table_last(new_table);
+	new_table->next = head;
 	return (new_table);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/27 19:23:30 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/27 19:34:35 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,25 @@ int	eat(t_philosopher *philosopher)
 {
 	int				status;
 	__useconds_t	time;
+	pthread_mutex_t	*first;
+	pthread_mutex_t	*second;
+	pthread_mutex_t	*tmp;
 
 	time = philosopher->times->time_to_eat;
-	pthread_mutex_lock(&philosopher->fork->mutex);
-	pthread_mutex_lock(&philosopher->previous->fork->mutex);
+	first = &philosopher->fork->mutex;
+	second = &philosopher->previous->fork->mutex;
+	tmp = NULL;
+	if (first > second)
+	{
+		tmp = first;
+		first = second;
+		second = tmp;
+	}
+	pthread_mutex_lock(first);
+	pthread_mutex_lock(second);
 	status = usleep(time);
-	pthread_mutex_unlock(&philosopher->fork->mutex);
-	pthread_mutex_unlock(&philosopher->previous->fork->mutex);
+	pthread_mutex_unlock(second);
+	pthread_mutex_unlock(first);
 	printf("%s is done eating!\n", philosopher->name);
 	return (status);
 }

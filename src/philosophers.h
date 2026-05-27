@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/16 16:56:38 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/27 18:57:39 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ typedef struct s_philosopher {
 	char			*name;
 	t_times			*times;
 	State			state;
-	struct s_fork	*fork_left;
-	struct s_fork	*fork_right;
+	struct s_fork	*fork;
 	struct s_philosopher	*previous;
 	struct s_philosopher	*next;
 }	t_philosopher;
 
 typedef struct s_fork {
 	struct s_philosopher	*philosopher;
+	pthread_mutex_t			mutex;
 }	t_fork;
 
 

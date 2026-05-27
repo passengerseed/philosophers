@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/16 16:57:12 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/27 19:19:14 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,15 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 	new_fork = malloc(sizeof(t_fork));
 	if (!new_fork)
 		return (free(new_philosopher), NULL);
-	pthread_create(&new_philosopher->thread, NULL, live, new_philosopher);
 	// new_philosopher->name = generate_name((long unsigned *)new_philosopher->thread);
 	new_philosopher->name = name;
 	new_philosopher->times = times;
-	new_philosopher->fork_left = new_fork;
-	new_philosopher->fork_right = NULL;
+	new_philosopher->fork = new_fork;
 	new_philosopher->state = INIT;
-	eat(new_philosopher);
+	new_philosopher->next = NULL;
+	new_philosopher->previous = NULL;
+	pthread_mutex_init(&new_fork->mutex, NULL);
+	pthread_create(&new_philosopher->thread, NULL, live, new_philosopher);
 	// pthread_join(new_philosopher->thread, NULL);
 	return (new_philosopher);
 }
@@ -71,17 +72,20 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 t_philosopher	*init_table(const char **argv, t_times *times)
 {
 	t_philosopher	*new_table;
-	t_philosopher	*head;
+	t_philosopher	*last;
 	int				i;
+	int				count;
 
 	new_table = NULL;
+	count = ft_atoi(argv[1]);
 	i = -1;
-	while (++i < ft_atoi(argv[1]))
-		table_add_back(&new_table, init_philosopher("Soraya", times));
-	head = new_table;
-	new_table->previous = table_last(new_table);
-	new_table = table_last(new_table);
-	new_table->next = head;
+	while (++i < count)
+		table_add_back(&new_table, init_philosopher("Steve", times));
+	if (!new_table)
+		return (NULL);
+	last = table_last(new_table);
+	last->next = new_table;
+	new_table->previous = last;
 	return (new_table);
 }
 

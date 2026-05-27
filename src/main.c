@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/10 19:53:12 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/05/27 19:05:01 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	main(int argc, const char **argv)
 		return (free(times), error("couldn't initialize table"), EXIT_FAILURE);
 	print_table(table);
 	// clear_table(&table);
+	eat(table);
 	free(times);
 	return (EXIT_SUCCESS);
 }

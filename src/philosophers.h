@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/27 18:57:39 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/06 18:48:23 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct s_fork {
 
 
 /* main.c */
-int				timer(void);
+long long		timer(void);
 void			error(char *str);
 
 /* init.c */
@@ -63,15 +63,20 @@ t_times			*init_times(const char **argv);
 t_philosopher	*init_philosopher(char *name, t_times *times);
 t_philosopher	*init_table(const char **argv, t_times *times);
 // void			clear_table(t_philosopher **table);
-// char			*generate_name(long unsigned *thread_id);
-
+int				rand(void);
+char			*generate_name(int rand);
+void			die(t_philosopher *philosopher, long long timestamp);
 /* process.c */
-int				switch_states(t_philosopher *philosopher, State new_state, int timestamp);
+int				switch_states(t_philosopher *philosopher, State new_state, long long timestamp);
+int				eat(t_philosopher *philosopher, long long timestamp);
+int				nap(t_philosopher *philosopher, long long timestamp);
+void			die(t_philosopher *philosopher, long long timestamp);
 void			*live(void *arg);
-int				eat(t_philosopher *philosopher);
 
 /* utils.c */
 int				ft_atoi(const char *str);
+char			*ft_strdup(const char *s);
+char			*ft_strjoin(char const *s1, char const *s2);
 
 /* lst_utils.c */
 void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);

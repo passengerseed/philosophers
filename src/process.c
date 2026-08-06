@@ -6,31 +6,37 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/05/27 19:34:35 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/06 18:57:26 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	switch_states(t_philosopher *philosopher, State new_state, int timestamp)
+int	switch_states(t_philosopher *philosopher, State new_state, long long timestamp)
 {
 	if (new_state == EATING && philosopher->fork != NULL)
-		printf("%d	%s %s\n", timestamp, philosopher->name, "is eating");
-	else if (new_state == EATING && philosopher->fork != NULL)
-		return (printf("%d	%s %s\n", timestamp, philosopher->name, "tried to eat, but has no fork!"), -1);
+		eat(philosopher, timestamp);
+	else if (new_state == EATING && (philosopher->fork == NULL || philosopher->previous->fork == NULL))
+	{
+		printf("%lld	%s %s\n", timestamp, philosopher->name, "tried to eat, but has no fork!");
+		return (-1);
+	}
 	else if (new_state == SLEEPING)
-		printf("%d	%s %s\n", timestamp, philosopher->name, "is sleeping");
+		nap(philosopher, timestamp);
 	else if (new_state == THINKING)
-		printf("%d	%s %s\n", timestamp, philosopher->name, "is thinking");
+		printf("%lld	%s %s\n", timestamp, philosopher->name, "is thinking");
 	else if (new_state == DEAD)
-		printf("%d	%s %s\n", timestamp, philosopher->name, "died");
+	{
+		philosopher->fork = NULL;
+		die(philosopher, timestamp);
+	}
 	else
 		return(error("couldn't change state"), -1);
 	philosopher->state = new_state;
 	return (0);
 }
 
-int	eat(t_philosopher *philosopher)
+int	eat(t_philosopher *philosopher, long long timestamp)
 {
 	int				status;
 	__useconds_t	time;
@@ -38,7 +44,8 @@ int	eat(t_philosopher *philosopher)
 	pthread_mutex_t	*second;
 	pthread_mutex_t	*tmp;
 
-	time = philosopher->times->time_to_eat;
+	(void)timestamp;
+	time = philosopher->times->time_to_eat * 1000;
 	first = &philosopher->fork->mutex;
 	second = &philosopher->previous->fork->mutex;
 	tmp = NULL;
@@ -49,19 +56,48 @@ int	eat(t_philosopher *philosopher)
 		second = tmp;
 	}
 	pthread_mutex_lock(first);
+	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
 	pthread_mutex_lock(second);
+	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
+	printf("%lld	%s is eating\n", timer(), philosopher->name);
 	status = usleep(time);
 	pthread_mutex_unlock(second);
 	pthread_mutex_unlock(first);
-	printf("%s is done eating!\n", philosopher->name);
+	printf("%lld	%s is done eating!\n", timer(), philosopher->name);
 	return (status);
+}
+
+int	nap(t_philosopher *philosopher, long long timestamp)
+{
+	int				status;
+	__useconds_t	time;
+
+	(void)timestamp;
+	time = philosopher->times->time_to_sleep * 1000;
+	printf("%lld	%s is sleeping\n", timer(), philosopher->name);
+	status = usleep(time);
+	printf("%lld	%s is done sleeping!\n", timer(), philosopher->name);
+	return(status);
+}
+
+void	die(t_philosopher *philosopher, long long timestamp)
+{
+	printf("%lld	%s died!\n", timestamp, philosopher->name);
+	exit(EXIT_SUCCESS);
 }
 
 void	*live(void *arg)
 {
 	t_philosopher	*philosopher;
+	long long		timestamp;
 
 	philosopher = (t_philosopher *)arg;
-	printf("> created a thread for: %s\n", philosopher->name);
+	timestamp = timer();
+	if (philosopher->state == THINKING)
+		switch_states(philosopher, EATING, timestamp);
+	else if (philosopher->state == EATING)
+		switch_states(philosopher, SLEEPING, timestamp);
+	else if (philosopher->state == SLEEPING)
+		switch_states(philosopher, DEAD, timestamp);
 	return (NULL);
 }

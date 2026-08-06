@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 18:48:23 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/06 19:24:07 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ t_times			*init_times(const char **argv);
 t_philosopher	*init_philosopher(char *name, t_times *times);
 t_philosopher	*init_table(const char **argv, t_times *times);
 // void			clear_table(t_philosopher **table);
-int				rand(void);
-char			*generate_name(int rand);
 void			die(t_philosopher *philosopher, long long timestamp);
 /* process.c */
 int				switch_states(t_philosopher *philosopher, State new_state, long long timestamp);
@@ -83,6 +81,9 @@ void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
 void			table_add_front(t_philosopher **table, t_philosopher *new_philosopher);
 t_philosopher	*table_last(t_philosopher *philosopher);
 
+/* namegen.c */
+int				rand(void);
+char			*generate_name(int rand);
 
 /* debug.c */
 void			print_table(t_philosopher *philosopher);

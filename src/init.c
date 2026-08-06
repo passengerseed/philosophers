@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 19:05:14 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/06 19:18:15 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,39 +24,6 @@ t_times	*init_times(const char **argv)
 	new_times->time_to_eat = ft_atoi(argv[3]);
 	new_times->time_to_sleep = ft_atoi(argv[4]);
 	return (new_times);
-}
-
-int	rand(void)
-{
-	static int	rand_state;
-
-	if (!rand_state)
-		rand_state = 1;
-    rand_state = (rand_state * 1103515245 + 12345) & 0x7fffffff;
-    return (rand_state);
-}
-
-
-char	*generate_name(int	rand)
-{
-	char	*new_name;
-	char	*tmp_name;
-	char	*syl_1[10] = {"Fe", "Pou", "Bla", "To", "Pi", "Tra", "Ti", "Gi", "Ple", "Pa"};
-	char	*syl_2[10] = {"plu", "tre", "flo", "cha", "dro", "que", "lle", "po", "clo", "ter"};
-	char	*syl_3[10] = {"velle", "chil", "tard", "tosi", "fant", "tte", "miche", "sse", "nille", "asse"};
-	int		tmp1;
-	int		tmp2;
-	int		tmp3;
-
-	tmp1 = abs(rand / 1000 % 10);
-	tmp2 = abs(rand / 10000 % 10);
-	tmp3 = abs(rand / 100000 % 10);
-	new_name = ft_strjoin(syl_1[tmp1], syl_2[tmp2]);
-	tmp_name = ft_strdup(new_name);
-	free(new_name);
-	new_name = ft_strjoin(tmp_name, syl_3[tmp3]);
-	free(tmp_name);
-	return (new_name);
 }
 
 t_philosopher	*init_philosopher(char *name, t_times *times)

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 18:57:26 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/06 19:24:06 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	switch_states(t_philosopher *philosopher, State new_state, long long timesta
 	else if (new_state == SLEEPING)
 		nap(philosopher, timestamp);
 	else if (new_state == THINKING)
-		printf("%lld	%s %s\n", timestamp, philosopher->name, "is thinking");
+		printf("%lld	%s %s\n", timer(), philosopher->name, "is thinking");
 	else if (new_state == DEAD)
 	{
 		philosopher->fork = NULL;
@@ -77,7 +77,7 @@ int	nap(t_philosopher *philosopher, long long timestamp)
 	printf("%lld	%s is sleeping\n", timer(), philosopher->name);
 	status = usleep(time);
 	printf("%lld	%s is done sleeping!\n", timer(), philosopher->name);
-	return(status);
+	return (status);
 }
 
 void	die(t_philosopher *philosopher, long long timestamp)
@@ -95,9 +95,9 @@ void	*live(void *arg)
 	timestamp = timer();
 	if (philosopher->state == THINKING)
 		switch_states(philosopher, EATING, timestamp);
-	else if (philosopher->state == EATING)
+	if (philosopher->state == EATING)
 		switch_states(philosopher, SLEEPING, timestamp);
-	else if (philosopher->state == SLEEPING)
-		switch_states(philosopher, DEAD, timestamp);
+	if (philosopher->state == SLEEPING)
+		switch_states(philosopher, THINKING, timestamp);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 19:24:06 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/07 19:09:46 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	switch_states(t_philosopher *philosopher, State new_state, long long timesta
 		die(philosopher, timestamp);
 	}
 	else
-		return(error("couldn't change state"), -1);
+		return (error("couldn't change state"), -1);
 	philosopher->state = new_state;
 	return (0);
 }
@@ -89,15 +89,25 @@ void	die(t_philosopher *philosopher, long long timestamp)
 void	*live(void *arg)
 {
 	t_philosopher	*philosopher;
-	long long		timestamp;
+	int				i;
 
 	philosopher = (t_philosopher *)arg;
-	timestamp = timer();
-	if (philosopher->state == THINKING)
-		switch_states(philosopher, EATING, timestamp);
-	if (philosopher->state == EATING)
-		switch_states(philosopher, SLEEPING, timestamp);
-	if (philosopher->state == SLEEPING)
-		switch_states(philosopher, THINKING, timestamp);
+	philosopher->last_meal_time = timer();
+	i = 0;
+	while (i < philosopher->times->times_eating)
+	{
+		if ((timer() - philosopher->last_meal_time) > philosopher->times->time_to_die)
+			switch_states(philosopher, DEAD, timer());
+		if (philosopher->state == THINKING)
+			switch_states(philosopher, EATING, timer());
+		if (philosopher->state == EATING)
+		{
+			i++;
+			switch_states(philosopher, SLEEPING, timer());
+			philosopher->last_meal_time = timer();
+		}
+		if (philosopher->state == SLEEPING)
+			switch_states(philosopher, THINKING, timer());
+	}
 	return (NULL);
 }

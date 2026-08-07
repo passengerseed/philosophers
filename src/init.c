@@ -6,13 +6,13 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 19:18:15 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/07 18:25:53 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-t_times	*init_times(const char **argv)
+t_times	*init_times(int argc, const char **argv)
 {
 	t_times	*new_times;
 
@@ -23,6 +23,10 @@ t_times	*init_times(const char **argv)
 	new_times->time_to_die = ft_atoi(argv[2]);
 	new_times->time_to_eat = ft_atoi(argv[3]);
 	new_times->time_to_sleep = ft_atoi(argv[4]);
+	if (argc > 5)
+		new_times->times_eating = ft_atoi(argv[5]);
+	else
+		new_times->times_eating = 1;
 	return (new_times);
 }
 
@@ -43,6 +47,7 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 	new_philosopher->times = times;
 	new_philosopher->fork = new_fork;
 	new_philosopher->state = THINKING;
+	new_philosopher->last_meal_time = 0;
 	new_philosopher->next = NULL;
 	new_philosopher->previous = NULL;
 	return (new_philosopher);

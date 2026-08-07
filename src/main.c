@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 18:21:43 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/07 19:09:45 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,23 @@ long long	timer(void)
 	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms);
 }
 
+void	death_clock(t_philosopher *philosopher, int delay)
+{
+	long long			start_time_ms;
+	struct timeval		tv;
+
+	gettimeofday(&tv, NULL);
+	start_time_ms = tv.tv_sec * 1000LL + tv.tv_usec / 1000LL;
+	while (((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms) < (long long)delay)
+	{
+		gettimeofday(&tv, NULL);
+		if (philosopher->state == EATING)
+			return ;
+	}
+
+	switch_states(philosopher, DEAD, tv.tv_sec * 1000LL + tv.tv_usec / 1000LL);
+}
+
 void	error(char *str)
 {
 	printf("ERROR: %s", str);
@@ -40,7 +57,7 @@ int	main(int argc, const char **argv)
 
 	if (argc < 5)
 		return (error("not enough arguments"), EXIT_FAILURE);
-	times = init_times(argv);
+	times = init_times(argc, argv);
 	if (!times)
 		return (error("couldn't initialize times struct"), EXIT_FAILURE);
 	table = init_table(argv, times);

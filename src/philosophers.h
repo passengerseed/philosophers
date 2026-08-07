@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 19:24:07 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/07 18:25:12 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,16 @@ typedef struct s_times {
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
+	int		times_eating;
 }	t_times;
 
 typedef struct s_philosopher {
-	pthread_t		thread;
-
-	char			*name;
-	t_times			*times;
-	State			state;
-	struct s_fork	*fork;
+	pthread_t				thread;
+	char					*name;
+	t_times					*times;
+	State					state;
+	long long				last_meal_time;
+	struct s_fork			*fork;
 	struct s_philosopher	*previous;
 	struct s_philosopher	*next;
 }	t_philosopher;
@@ -56,10 +57,11 @@ typedef struct s_fork {
 
 /* main.c */
 long long		timer(void);
+void			death_clock(t_philosopher *philosopher, int	delay);
 void			error(char *str);
 
 /* init.c */
-t_times			*init_times(const char **argv);
+t_times			*init_times(int argc, const char **argv);
 t_philosopher	*init_philosopher(char *name, t_times *times);
 t_philosopher	*init_table(const char **argv, t_times *times);
 // void			clear_table(t_philosopher **table);

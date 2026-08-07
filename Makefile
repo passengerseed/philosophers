@@ -6,14 +6,14 @@
 #    By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/10 15:54:28 by lrouchon          #+#    #+#              #
-#    Updated: 2026/08/06 19:20:15 by lrouchon         ###   ########.fr        #
+#    Updated: 2026/08/07 19:10:15 by lrouchon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g3
 
-NAME = philosophers
+NAME = philo
 
 SRC_PATH = src/
 SRC = $(SRC_PATH)main.c \

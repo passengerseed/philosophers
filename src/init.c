@@ -6,13 +6,16 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/07 18:25:53 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/09 18:52:26 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-t_times	*init_times(int argc, const char **argv)
+t_times	*init_times(
+	int argc,
+	const char **argv
+)
 {
 	t_times	*new_times;
 
@@ -30,7 +33,10 @@ t_times	*init_times(int argc, const char **argv)
 	return (new_times);
 }
 
-t_philosopher	*init_philosopher(char *name, t_times *times)
+t_philosopher	*init_philosopher(
+	char *name,
+	t_times *times
+)
 {
 	t_philosopher	*new_philosopher;
 	t_fork			*new_fork;
@@ -42,18 +48,23 @@ t_philosopher	*init_philosopher(char *name, t_times *times)
 	if (!new_fork)
 		return (free(new_philosopher), NULL);
 	pthread_mutex_init(&new_fork->mutex, NULL);
+	pthread_mutex_init(&new_philosopher->last_meal_mutex, NULL);
 	new_philosopher->thread = 0;
 	new_philosopher->name = name;
 	new_philosopher->times = times;
 	new_philosopher->fork = new_fork;
 	new_philosopher->state = THINKING;
 	new_philosopher->last_meal_time = 0;
+	new_philosopher->finished = false;
 	new_philosopher->next = NULL;
 	new_philosopher->previous = NULL;
 	return (new_philosopher);
 }
 
-t_philosopher	*init_table(const char **argv, t_times *times)
+t_philosopher	*init_table(
+	const char **argv,
+	t_times *times
+)
 {
 	t_philosopher	*new_table;
 	t_philosopher	*last;
@@ -88,7 +99,10 @@ t_philosopher	*table_last(t_philosopher *philosopher)
 }
 
 
-void	table_add_back(t_philosopher **table, t_philosopher *new_philosopher)
+void	table_add_back(
+	t_philosopher **table,
+	t_philosopher *new_philosopher
+)
 {
 	t_philosopher	*current;
 
@@ -103,7 +117,10 @@ void	table_add_back(t_philosopher **table, t_philosopher *new_philosopher)
 	new_philosopher->previous = current;
 }
 
-void	table_add_front(t_philosopher **table, t_philosopher *new_philosopher)
+void	table_add_front(
+	t_philosopher **table,
+	t_philosopher *new_philosopher
+)
 {
 	new_philosopher->next = *table;
 	if (new_philosopher->next)

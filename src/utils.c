@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:12:52 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/06 18:48:33 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/09 18:51:05 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,10 @@ char	*ft_strdup(const char *s)
 	return (newstr);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(
+	const char	*s1,
+	const char	*s2
+)
 {
 	size_t	i;
 	size_t	j;

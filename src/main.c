@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/07 19:09:45 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/09 20:17:52 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ long long	timer(void)
 	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms);
 }
 
-void	death_clock(t_philosopher *philosopher, int delay)
+void	death_clock(
+	t_philosopher *philosopher,
+	int delay
+)
 {
 	long long			start_time_ms;
 	struct timeval		tv;
@@ -41,6 +44,36 @@ void	death_clock(t_philosopher *philosopher, int delay)
 	}
 
 	switch_states(philosopher, DEAD, tv.tv_sec * 1000LL + tv.tv_usec / 1000LL);
+}
+
+void	panopticon(
+	t_philosopher *philosopher,
+	const char **argv
+)
+{
+	int	finished_count;
+	int	count;
+	int	i;
+	
+	count = ft_atoi(argv[1]);
+	while (philosopher)
+	{
+		finished_count = 0;
+		i = 0;
+		while (i < count)
+		{
+			pthread_mutex_lock(&philosopher->last_meal_mutex);
+			if (((timer() - philosopher->last_meal_time) > philosopher->times->time_to_die) && philosopher->state != EATING)
+				switch_states(philosopher, DEAD, timer());
+			if (philosopher->finished == true)
+				finished_count++;
+			pthread_mutex_unlock(&philosopher->last_meal_mutex);
+			philosopher = philosopher->next;
+			i++;
+		}
+		if (finished_count == count)
+			return ;
+	}
 }
 
 void	error(char *str)
@@ -75,6 +108,7 @@ int	main(int argc, const char **argv)
 	}
 	table = head;
 	i = times->philosopher_amount;
+	panopticon(table, argv);
 	while (i > 0)
 	{
 		pthread_join(table->thread, NULL);

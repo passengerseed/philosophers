@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/09 20:17:52 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/09 20:33:16 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,12 @@ void	panopticon(
 	{
 		finished_count = 0;
 		i = 0;
-		while (i < count)
+		while (i <= count)
 		{
 			pthread_mutex_lock(&philosopher->last_meal_mutex);
-			if (((timer() - philosopher->last_meal_time) > philosopher->times->time_to_die) && philosopher->state != EATING)
+			if (((timer() - philosopher->last_meal_time)
+					> philosopher->times->time_to_die)
+				&& philosopher->state != EATING)
 				switch_states(philosopher, DEAD, timer());
 			if (philosopher->finished == true)
 				finished_count++;
@@ -97,7 +99,7 @@ int	main(int argc, const char **argv)
 	if (!table)
 		return (free(times), error("couldn't initialize table"), EXIT_FAILURE);
 	timer();
-	print_table(table);
+	// print_table(table);
 	head = table;
 	i = times->philosopher_amount;
 	while (i > 0)

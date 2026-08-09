@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/09 20:17:53 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/09 20:43:40 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	switch_states(
 {
 	if (new_state == EATING && philosopher->fork != NULL)
 	{
-		philosopher->state = new_state;
 		eat(philosopher, timestamp);
 	}
 	else if (new_state == EATING && (philosopher->fork == NULL || philosopher->previous->fork == NULL))
@@ -40,7 +39,6 @@ int	switch_states(
 	}
 	else if (new_state == DEAD)
 	{
-		philosopher->fork = NULL;
 		philosopher->state = new_state;
 		die(philosopher, timestamp);
 	}
@@ -75,6 +73,7 @@ int	eat(
 	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
 	pthread_mutex_lock(second);
 	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
+	philosopher->state = EATING;
 	printf("%lld	%s is eating\n", timer(), philosopher->name);
 	status = usleep(time);
 	pthread_mutex_unlock(second);
@@ -123,8 +122,6 @@ void	*live(void *arg)
 	i = 0;
 	while (i < philosopher->times->times_eating)
 	{
-		// if ((timer() - philosopher->last_meal_time) > philosopher->times->time_to_die)
-		// 	switch_states(philosopher, DEAD, timer());
 		if (philosopher->state == THINKING)
 			switch_states(philosopher, EATING, timer());
 		if (philosopher->state == EATING)

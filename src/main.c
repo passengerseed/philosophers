@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/09 20:33:16 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/11 19:02:01 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,12 @@ int	main(int argc, const char **argv)
 	if (!table)
 		return (free(times), error("couldn't initialize table"), EXIT_FAILURE);
 	timer();
-	// print_table(table);
+	print_table(table);
 	head = table;
 	i = times->philosopher_amount;
 	while (i > 0)
 	{
+		// usleep(1000 * (times->philosopher_amount - i));
 		pthread_create(&table->thread, NULL, live, table);
 		table = table->next;
 		i--;

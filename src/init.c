@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/09 18:52:26 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/11 19:22:12 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ t_times	*init_times(
 
 t_philosopher	*init_philosopher(
 	char *name,
-	t_times *times
+	t_times *times,
+	t_sync *sync
 )
 {
 	t_philosopher	*new_philosopher;
@@ -52,6 +53,7 @@ t_philosopher	*init_philosopher(
 	new_philosopher->thread = 0;
 	new_philosopher->name = name;
 	new_philosopher->times = times;
+	new_philosopher->sync = sync;
 	new_philosopher->fork = new_fork;
 	new_philosopher->state = THINKING;
 	new_philosopher->last_meal_time = 0;
@@ -68,18 +70,23 @@ t_philosopher	*init_table(
 {
 	t_philosopher	*new_table;
 	t_philosopher	*last;
+	t_sync			*sync;
 	int				i;
 	int				count;
 	int				r;
 
 	r = 0;
 	new_table = NULL;
+	sync = malloc(sizeof(*sync));
+	pthread_mutex_init(&sync->sync_mutex, NULL);
+	sync->target_count = 0;
+	sync->target_count = times->philosopher_amount / 2;
 	count = ft_atoi(argv[1]);
 	i = -1;
 	while (++i < count)
 	{
 		r = rand();
-		table_add_back(&new_table, init_philosopher(generate_name(r), times));
+		table_add_back(&new_table, init_philosopher(generate_name(r), times, sync));
 	}
 	if (!new_table)
 		return (NULL);

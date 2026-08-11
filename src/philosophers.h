@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/09 18:38:38 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/11 19:21:38 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,13 @@ typedef enum state {
 	DEAD		//4
 }	State;
 
+typedef struct s_sync {
+	pthread_mutex_t	sync_mutex;
+	int				ready_count;
+	int				target_count;
+	bool			go;
+}	t_sync;
+
 typedef struct s_times {
 	int				philosopher_amount;
 	int				time_to_die;
@@ -41,9 +48,11 @@ typedef struct s_philosopher {
 	pthread_t				thread;
 	char					*name;
 	t_times					*times;
+	t_sync					*sync;
 	State					state;
 	long long				last_meal_time;
 	pthread_mutex_t			last_meal_mutex;
+	bool					ready_to_eat;
 	bool					finished;
 	struct s_fork			*fork;
 	struct s_philosopher	*previous;
@@ -65,12 +74,13 @@ void			panopticon(t_philosopher *philosopher, const char **argv);
 
 /* init.c */
 t_times			*init_times(int argc, const char **argv);
-t_philosopher	*init_philosopher(char *name, t_times *times);
+t_philosopher	*init_philosopher(char *name, t_times *times, t_sync *sync);
 t_philosopher	*init_table(const char **argv, t_times *times);
 // void			clear_table(t_philosopher **table);
 void			die(t_philosopher *philosopher, long long timestamp);
 /* process.c */
 int				switch_states(t_philosopher *philosopher, State new_state, long long timestamp);
+void			take_forks(t_philosopher *philosopher);
 int				eat(t_philosopher *philosopher, long long timestamp);
 int				nap(t_philosopher *philosopher, long long timestamp);
 void			die(t_philosopher *philosopher, long long timestamp);

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/11 19:22:12 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/12 16:51:58 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ t_times	*init_times(
 		new_times->times_eating = 1;
 	return (new_times);
 }
+
+t_sync	*init_sync(
+	int
+)
 
 t_philosopher	*init_philosopher(
 	char *name,

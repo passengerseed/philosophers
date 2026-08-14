@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/11 19:21:38 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/14 16:31:51 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@
 # include <unistd.h>
 # include <limits.h>
 # include <sys/time.h>
+
+# define COLOR_RED     "\x1b[31m"
+# define COLOR_GREEN   "\x1b[32m"
+# define COLOR_YELLOW  "\x1b[33m"
+# define COLOR_BLUE    "\x1b[34m"
+# define COLOR_RESET   "\x1b[0m"
 
 typedef enum state {
 	INIT,		//0
@@ -47,6 +53,7 @@ typedef struct s_times {
 typedef struct s_philosopher {
 	pthread_t				thread;
 	char					*name;
+	int						index;
 	t_times					*times;
 	t_sync					*sync;
 	State					state;
@@ -74,7 +81,7 @@ void			panopticon(t_philosopher *philosopher, const char **argv);
 
 /* init.c */
 t_times			*init_times(int argc, const char **argv);
-t_philosopher	*init_philosopher(char *name, t_times *times, t_sync *sync);
+t_philosopher	*init_philosopher(char *name, t_times *times, t_sync *sync, int index);
 t_philosopher	*init_table(const char **argv, t_times *times);
 // void			clear_table(t_philosopher **table);
 void			die(t_philosopher *philosopher, long long timestamp);
@@ -90,6 +97,7 @@ void			*live(void *arg);
 int				ft_atoi(const char *str);
 char			*ft_strdup(const char *s);
 char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_itoa(int n);
 // void			print_lock(t_philosopher *philosopher, char *str);
 
 /* lst_utils.c */

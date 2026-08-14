@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/11 19:22:54 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/14 16:37:03 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	switch_states(
 	}
 	else if (new_state == EATING && (philosopher->fork == NULL || philosopher->previous->fork == NULL))
 	{
-		printf("%lld	%s %s\n", timestamp, philosopher->name, "tried to eat, but has no fork!");
+		printf("[ %lld ms ]	%s %s\n", timestamp, philosopher->name, "tried to eat, but has no fork!");
 		return (-1);
 	}
 	else if (new_state == SLEEPING)
@@ -35,7 +35,7 @@ int	switch_states(
 	else if (new_state == THINKING)
 	{
 		philosopher->state = new_state;
-		printf("%lld	%s %s\n", timer(), philosopher->name, "is thinking");
+		printf("[ %lld ms ]	%s %s\n", timer(), philosopher->name, "is thinking");
 	}
 	else if (new_state == DEAD)
 	{
@@ -63,9 +63,9 @@ void	take_forks(t_philosopher *philosopher)
 		second = tmp;
 	}
 	pthread_mutex_lock(first);
-	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
+	printf("[ %lld ms ]	%s has taken a fork\n", timer(), philosopher->name);
 	pthread_mutex_lock(second);
-	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
+	printf("[ %lld ms ]	%s has taken a fork\n", timer(), philosopher->name);
 	philosopher->ready_to_eat = true;
 }
 
@@ -92,18 +92,18 @@ int	eat(
 		second = tmp;
 	}
 	pthread_mutex_lock(first);
-	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
+	printf("[ %lld ms ]%s	%s has taken a fork%s\n", timer(), COLOR_GREEN, philosopher->name, COLOR_RESET);
 	pthread_mutex_lock(second);
-	printf("%lld	%s has taken a fork\n", timer(), philosopher->name);
+	printf("[ %lld ms ]%s	%s has taken a fork%s\n", timer(), COLOR_GREEN, philosopher->name, COLOR_RESET);
 	philosopher->state = EATING;
 	pthread_mutex_lock(&philosopher->last_meal_mutex);
 	philosopher->last_meal_time = timer();
 	pthread_mutex_unlock(&philosopher->last_meal_mutex);
-	printf("%lld	%s is eating\n", timer(), philosopher->name);
+	printf("[ %lld ms ]%s	%s is eating%s\n", timer(), COLOR_YELLOW, philosopher->name, COLOR_RESET);
 	status = usleep(time);
 	pthread_mutex_unlock(second);
 	pthread_mutex_unlock(first);
-	printf("%lld	%s is done eating!\n", timer(), philosopher->name);
+	printf("[ %lld ms ]%s	%s is done eating!%s\n", timer(), COLOR_YELLOW, philosopher->name, COLOR_RESET);
 	return (status);
 }
 
@@ -117,9 +117,9 @@ int	nap(
 
 	(void)timestamp;
 	time = philosopher->times->time_to_sleep * 1000;
-	printf("%lld	%s is sleeping\n", timer(), philosopher->name);
+	printf("[ %lld ms ]%s	%s is sleeping%s\n", timer(), COLOR_BLUE, philosopher->name, COLOR_RESET);
 	status = usleep(time);
-	printf("%lld	%s is done sleeping!\n", timer(), philosopher->name);
+	printf("[ %lld ms ]%s	%s is done sleeping!%s\n", timer(), COLOR_BLUE, philosopher->name, COLOR_RESET);
 	return (status);
 }
 
@@ -128,7 +128,7 @@ void	die(
 	long long timestamp
 )
 {
-	printf("%lld	%s died!\n", timestamp, philosopher->name);
+	printf("[ %lld ms ]%s	%s has died!%s\n", timestamp, COLOR_RED, philosopher->name, COLOR_RESET);
 	exit(EXIT_SUCCESS);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 16:28:26 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/14 18:12:04 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,25 @@ long long	timer(void)
 	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms);
 }
 
-void	death_clock(
-	t_philosopher *philosopher,
-	int delay
-)
-{
-	long long			start_time_ms;
-	struct timeval		tv;
+// void	death_clock(
+// 	t_philosopher *philosopher,
+// 	int delay
+// )
+// {
+// 	long long			start_time_ms;
+// 	struct timeval		tv;
 
-	gettimeofday(&tv, NULL);
-	start_time_ms = tv.tv_sec * 1000LL + tv.tv_usec / 1000LL;
-	while (((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms) < (long long)delay)
-	{
-		gettimeofday(&tv, NULL);
-		if (philosopher->state == EATING)
-			return ;
-	}
+// 	gettimeofday(&tv, NULL);
+// 	start_time_ms = tv.tv_sec * 1000LL + tv.tv_usec / 1000LL;
+// 	while (((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms) < (long long)delay)
+// 	{
+// 		gettimeofday(&tv, NULL);
+// 		if (philosopher->state == EATING)
+// 			return ;
+// 	}
 
-	switch_states(philosopher, DEAD, tv.tv_sec * 1000LL + tv.tv_usec / 1000LL);
-}
+// 	switch_states(philosopher, DEAD, tv.tv_sec * 1000LL + tv.tv_usec / 1000LL);
+// }
 
 void	panopticon(
 	t_philosopher *philosopher,
@@ -54,7 +54,7 @@ void	panopticon(
 	int	finished_count;
 	int	count;
 	int	i;
-	
+
 	count = ft_atoi(argv[1]);
 	while (philosopher)
 	{
@@ -66,7 +66,7 @@ void	panopticon(
 			if (((timer() - philosopher->last_meal_time)
 					> philosopher->times->time_to_die)
 				&& philosopher->state != EATING)
-				switch_states(philosopher, DEAD, timer());
+				die(philosopher);
 			if (philosopher->finished == true)
 				finished_count++;
 			pthread_mutex_unlock(&philosopher->last_meal_mutex);

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 16:31:51 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/14 19:10:27 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <limits.h>
 # include <sys/time.h>
 
+/* printf color macros */
 # define COLOR_RED     "\x1b[31m"
 # define COLOR_GREEN   "\x1b[32m"
 # define COLOR_YELLOW  "\x1b[33m"
@@ -37,9 +38,12 @@ typedef enum state {
 
 typedef struct s_sync {
 	pthread_mutex_t	sync_mutex;
-	int				ready_count;
-	int				target_count;
-	bool			go;
+	bool			even_phase_ready;
+	bool			odd_phase_ready;
+	int				even_ready_count;
+	int				odd_ready_count;
+	int				even_total;
+	int				odd_total;
 }	t_sync;
 
 typedef struct s_times {
@@ -67,46 +71,42 @@ typedef struct s_philosopher {
 }	t_philosopher;
 
 typedef struct s_fork {
-	struct s_philosopher	*philosopher;
 	pthread_mutex_t			mutex;
 }	t_fork;
 
-
-
 /* main.c */
 long long		timer(void);
-void			death_clock(t_philosopher *philosopher, int	delay);
 void			error(char *str);
 void			panopticon(t_philosopher *philosopher, const char **argv);
 
 /* init.c */
+t_sync			*init_sync(t_times *times);
 t_times			*init_times(int argc, const char **argv);
-t_philosopher	*init_philosopher(char *name, t_times *times, t_sync *sync, int index);
+t_philosopher	*init_philosopher(t_times *times, t_sync *sync, int index);
 t_philosopher	*init_table(const char **argv, t_times *times);
+void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
+t_philosopher	*table_last(t_philosopher *philosopher);
 // void			clear_table(t_philosopher **table);
-void			die(t_philosopher *philosopher, long long timestamp);
+
 /* process.c */
-int				switch_states(t_philosopher *philosopher, State new_state, long long timestamp);
 void			take_forks(t_philosopher *philosopher);
-int				eat(t_philosopher *philosopher, long long timestamp);
-int				nap(t_philosopher *philosopher, long long timestamp);
-void			die(t_philosopher *philosopher, long long timestamp);
+int				eat(t_philosopher *philosopher);
+int				nap(t_philosopher *philosopher);
+void			die(t_philosopher *philosopher);
+void			wait_for_phase(t_sync *sync, int philosopher_index);
+void			start_phase(t_sync *sync, int philosopher_index);
 void			*live(void *arg);
 
 /* utils.c */
+size_t			ft_strlen(const char *str);
 int				ft_atoi(const char *str);
-char			*ft_strdup(const char *s);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_itoa(int n);
-// void			print_lock(t_philosopher *philosopher, char *str);
-
-/* lst_utils.c */
-void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
-void			table_add_front(t_philosopher **table, t_philosopher *new_philosopher);
-t_philosopher	*table_last(t_philosopher *philosopher);
+int				ft_rand(void);
 
 /* namegen.c */
-int				rand(void);
+size_t			ft_count(int n);
+char			*ft_itoa(int n);
+char			*ft_strdup(const char *s);
+char			*ft_strjoin(char const *s1, char const *s2);
 char			*generate_name(int rand);
 
 /* debug.c */

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:12:52 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 16:20:42 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/14 18:25:56 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static	int	ft_isspace(unsigned char c)
 	return (0);
 }
 
-static size_t	ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
 	size_t	i;
 
@@ -62,95 +62,13 @@ int	ft_atoi(const char *str)
 	return (n * sign);
 }
 
-static size_t	ft_count(int n)
+int	ft_rand(void)
 {
-	size_t	n_size;
+	static int	rand_state;
 
-	n_size = 1;
-	if (n < 0)
-	{
-		n *= -1;
-		n_size++;
-	}
-	while (n >= 10)
-	{
-		n /= 10;
-		n_size++;
-	}
-	return (n_size);
+	if (!rand_state)
+		rand_state = 1;
+	rand_state = (rand_state * 1103515245 + 12345) & 0x7fffffff;
+	return (rand_state);
 }
 
-char	*ft_itoa(int n)
-{
-	size_t	newstr_size;
-	char	*newstr;
-
-	if (n == -2147483648)
-		return (ft_strdup("-2147483648"));
-	if (n == 0)
-		return (ft_strdup("0"));
-	newstr_size = ft_count(n);
-	newstr = malloc(sizeof(char) * (newstr_size + 1));
-	if (!newstr)
-		return (0);
-	newstr[newstr_size] = '\0';
-	newstr_size--;
-	if (n < 0)
-	{
-		n *= -1;
-		newstr[0] = '-';
-	}
-	while (n > 0)
-	{
-		newstr[newstr_size] = (n % 10) + '0';
-		n /= 10;
-		newstr_size--;
-	}
-	return (newstr);
-}
-
-char	*ft_strdup(const char *s)
-{
-	size_t	i;
-	char	*newstr;
-
-	i = 0;
-	newstr = malloc((sizeof(char) * ft_strlen(s)) + 1);
-	if (!newstr)
-		return (0);
-	while (s[i])
-	{
-		newstr[i] = s[i];
-		i++;
-	}
-	newstr[i] = '\0';
-	return (newstr);
-}
-
-char	*ft_strjoin(
-	const char	*s1,
-	const char	*s2
-)
-{
-	size_t	i;
-	size_t	j;
-	char	*newstr;
-
-	i = 0;
-	j = 0;
-	newstr = malloc((sizeof(char) * (ft_strlen(s1) + ft_strlen(s2))) + 1);
-	if (!newstr)
-		return (0);
-	while (s1[i])
-	{
-		newstr[i] = s1[i];
-		i++;
-	}
-	while (s2[j])
-	{
-		newstr[i + j] = s2[j];
-		j++;
-	}
-	newstr[i + j] = '\0';
-	return (newstr);
-}

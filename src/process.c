@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 19:15:06 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/15 18:09:50 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	eat(t_philosopher *philosopher)
 	printf("[ %lld ms ]%s	%s is eating%s\n", timer(), COLOR_YELLOW, philosopher->name, COLOR_RESET);
 	status = usleep(time);
 	printf("[ %lld ms ]%s	%s is done eating!%s\n", timer(), COLOR_YELLOW, philosopher->name, COLOR_RESET);
+	pthread_mutex_unlock(&philosopher->fork->mutex);
+	pthread_mutex_unlock(&philosopher->previous->fork->mutex);
 	return (status);
 }
 
@@ -75,11 +77,15 @@ void	wait_for_phase(t_sync *sync, int philosopher_index)
 	{
 		if (philosopher_index % 2 == 0 && sync->even_phase_ready)
 		{
+			sync->even_ready_count = 0;
+			sync->even_phase_ready = false;
 			pthread_mutex_unlock(&sync->sync_mutex);
 			return ;
 		}
 		if (philosopher_index % 2 != 0 && sync->odd_phase_ready)
 		{
+			sync->odd_ready_count = 0;
+			sync->odd_phase_ready = false;
 			pthread_mutex_unlock(&sync->sync_mutex);
 			return ;
 		}
@@ -132,7 +138,10 @@ void	*live(void *arg)
 			nap(philosopher);
 		}
 		if (philosopher->state == SLEEPING)
+		{
+			philosopher->state = THINKING;
 			printf("[ %lld ms ]%s	%s is thinking%s\n", timer(), COLOR_RESET, philosopher->name, COLOR_RESET);
+		}
 	}
 	pthread_mutex_lock(&philosopher->last_meal_mutex);
 	philosopher->finished = true;

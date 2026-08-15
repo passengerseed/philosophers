@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 19:10:27 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/15 18:41:56 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_philosopher {
 	t_times					*times;
 	t_sync					*sync;
 	State					state;
+	pthread_mutex_t			state_mutex;
 	long long				last_meal_time;
 	pthread_mutex_t			last_meal_mutex;
 	bool					ready_to_eat;

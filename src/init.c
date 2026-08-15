@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 19:05:47 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/15 18:44:52 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ t_philosopher	*init_philosopher(
 		return (free(new_philosopher), NULL);
 	pthread_mutex_init(&new_fork->mutex, NULL);
 	pthread_mutex_init(&new_philosopher->last_meal_mutex, NULL);
+	pthread_mutex_init(&new_philosopher->state_mutex, NULL);
 	new_philosopher->thread = 0;
 	new_philosopher->name = generate_name(ft_rand());
 	new_philosopher->index = index;

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 18:12:04 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/15 18:46:56 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	panopticon(
 		while (i <= count)
 		{
 			pthread_mutex_lock(&philosopher->last_meal_mutex);
+			pthread_mutex_lock(&philosopher->state_mutex);
 			if (((timer() - philosopher->last_meal_time)
 					> philosopher->times->time_to_die)
 				&& philosopher->state != EATING)
@@ -70,6 +71,7 @@ void	panopticon(
 			if (philosopher->finished == true)
 				finished_count++;
 			pthread_mutex_unlock(&philosopher->last_meal_mutex);
+			pthread_mutex_unlock(&philosopher->state_mutex);
 			philosopher = philosopher->next;
 			i++;
 		}

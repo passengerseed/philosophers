@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 16:34:26 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 17:41:21 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,36 @@ void	error(char *str)
 	printf("ERROR: %s", str);
 }
 
+void	*monitor(void *arg)
+{
+	t_philosopher	*philosopher;
+
+	philosopher = (t_philosopher *)arg;
+	while (1)
+	{
+		pthread_mutex_lock(&philosopher->sync->sync_mutex);
+		if (philosopher->sync->ready_count == philosopher->times->philosopher_amount)
+			break ;
+		pthread_mutex_unlock(&philosopher->sync->sync_mutex);
+		pthread_mutex_lock(&philosopher->last_meal_mutex);
+		if (timer() - philosopher->last_meal_time >= philosopher->times->time_to_die)
+		{
+			printf("[ %lld ms ]	%s has died!\n", timer(), philosopher->name);
+			exit(EXIT_FAILURE);
+		}
+		pthread_mutex_unlock(&philosopher->last_meal_mutex);
+
+	}
+	printf("SIMULATION FINISHED!");
+	return (0);
+}
+
 int	main(int argc, const char **argv)
 {
 	t_times			*times;
 	t_philosopher	*table;
 	t_philosopher	*head;
+	pthread_t		panopticon;
 	int				i;
 
 	if (argc < 5)
@@ -56,6 +81,7 @@ int	main(int argc, const char **argv)
 		table = table->next;
 		i--;
 	}
+	panopticon = pthread_create(&panopticon, NULL, monitor, table);
 	table = head;
 	i = times->philosopher_amount;
 	while (i > 0)

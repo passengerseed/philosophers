@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 16:57:02 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 17:27:54 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ t_times	*init_times(
 	new_times = malloc(sizeof(t_times));
 	if (!new_times)
 		return (NULL);
-	pthread_mutex_init(&new_times->times_mutex, NULL);
 	new_times->philosopher_amount = ft_atoi(argv[1]);
 	new_times->time_to_die = ft_atoi(argv[2]);
 	new_times->time_to_eat = ft_atoi(argv[3]);
@@ -67,19 +66,13 @@ t_philosopher	*init_philosopher(
 	return (new_philosopher);
 }
 
-t_sync	*init_sync(t_times *times)
+t_sync	*init_sync(void)
 {
 	t_sync			*new_sync;
 
 	new_sync = malloc(sizeof(t_sync));
 	pthread_mutex_init(&new_sync->sync_mutex, NULL);
-	new_sync->even_ready_count = 0;
-	new_sync->odd_ready_count = 0;
-	new_sync->even_total = times->philosopher_amount / 2;
-	if (times->philosopher_amount % 2 != 0)
-		new_sync->odd_total = (times->philosopher_amount / 2) + 1;
-	else
-		new_sync->odd_total = times->philosopher_amount / 2;
+	new_sync->ready_count = 0;
 	return (new_sync);
 }
 
@@ -95,7 +88,7 @@ t_philosopher	*init_table(
 	int				count;
 
 	new_table = NULL;
-	sync = init_sync(times);
+	sync = init_sync();
 	count = ft_atoi(argv[1]);
 	i = -1;
 	while (++i < count)

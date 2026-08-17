@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 16:58:34 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 17:29:00 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,10 @@ typedef enum state {
 
 typedef struct s_sync {
 	pthread_mutex_t	sync_mutex;
-	bool			even_phase_ready;
-	bool			odd_phase_ready;
-	int				even_ready_count;
-	int				odd_ready_count;
-	int				even_total;
-	int				odd_total;
+	int				ready_count;
 }	t_sync;
 
 typedef struct s_times {
-	pthread_mutex_t	times_mutex;
 	int				philosopher_amount;
 	int				time_to_die;
 	int				time_to_eat;
@@ -79,10 +73,10 @@ typedef struct s_fork {
 /* main.c */
 long long		timer(void);
 void			error(char *str);
-void			panopticon(t_philosopher *philosopher, const char **argv);
+void			*monitor(void *arg);
 
 /* init.c */
-t_sync			*init_sync(t_times *times);
+t_sync			*init_sync(void);
 t_times			*init_times(int argc, const char **argv);
 t_philosopher	*init_philosopher(t_times *times, t_sync *sync, int index);
 t_philosopher	*init_table(const char **argv, t_times *times);
@@ -93,6 +87,7 @@ t_philosopher	*table_last(t_philosopher *philosopher);
 /* process.c */
 void			*lifecycle(void	*arg);
 int				take_forks_and_eat(t_philosopher *philosopher);
+int				nap(t_philosopher *philosopher);
 
 /* utils.c */
 size_t			ft_strlen(const char *str);

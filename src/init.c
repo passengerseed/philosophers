@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 16:14:54 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 16:57:02 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_times	*init_times(
 	new_times = malloc(sizeof(t_times));
 	if (!new_times)
 		return (NULL);
+	pthread_mutex_init(&new_times->times_mutex, NULL);
 	new_times->philosopher_amount = ft_atoi(argv[1]);
 	new_times->time_to_die = ft_atoi(argv[2]);
 	new_times->time_to_eat = ft_atoi(argv[3]);

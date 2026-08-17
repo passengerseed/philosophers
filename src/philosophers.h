@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 16:46:22 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 16:58:34 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_sync {
 }	t_sync;
 
 typedef struct s_times {
+	pthread_mutex_t	times_mutex;
 	int				philosopher_amount;
 	int				time_to_die;
 	int				time_to_eat;
@@ -91,6 +92,7 @@ t_philosopher	*table_last(t_philosopher *philosopher);
 
 /* process.c */
 void			*lifecycle(void	*arg);
+int				take_forks_and_eat(t_philosopher *philosopher);
 
 /* utils.c */
 size_t			ft_strlen(const char *str);

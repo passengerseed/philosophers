@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/15 18:44:52 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 16:14:54 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,17 +133,3 @@ void	table_add_back(
 	new_philosopher->next = NULL;
 	new_philosopher->previous = current;
 }
-
-// void	clear_table(t_philosopher **table)
-// {
-// 	t_philosopher	*current;
-
-// 	current = *table;
-// 	while (current)
-// 	{
-// 		current = current->next;
-// 		free(current->previous);
-// 	}
-// 	free(current);
-// 	free(table);
-// }

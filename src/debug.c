@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 19:05:27 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 19:05:29 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 16:39:20 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	print_table(t_philosopher *philosopher)
 	printf("--- TABLE: ----------------------------\n");
 	while (++i < j)
 	{
-		printf("> %s	%lu\n", philosopher->name, philosopher->thread);
+		printf("%d	> %s	%lu\n", i, philosopher->name, philosopher->thread);
 		philosopher = philosopher->next;
 	}
 	printf("---------------------------------------\n");

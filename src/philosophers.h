@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/15 18:41:56 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 16:46:22 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,7 @@ t_philosopher	*table_last(t_philosopher *philosopher);
 // void			clear_table(t_philosopher **table);
 
 /* process.c */
-void			take_forks(t_philosopher *philosopher);
-int				eat(t_philosopher *philosopher);
-int				nap(t_philosopher *philosopher);
-void			die(t_philosopher *philosopher);
-void			wait_for_phase(t_sync *sync, int philosopher_index);
-void			start_phase(t_sync *sync, int philosopher_index);
-void			*live(void *arg);
+void			*lifecycle(void	*arg);
 
 /* utils.c */
 size_t			ft_strlen(const char *str);

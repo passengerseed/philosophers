@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 17:27:54 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 18:23:06 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_times	*init_times(
 	if (argc > 5)
 		new_times->times_eating = ft_atoi(argv[5]);
 	else
-		new_times->times_eating = 1000000;
+		new_times->times_eating = 0;
 	return (new_times);
 }
 
@@ -50,14 +50,12 @@ t_philosopher	*init_philosopher(
 		return (free(new_philosopher), NULL);
 	pthread_mutex_init(&new_fork->mutex, NULL);
 	pthread_mutex_init(&new_philosopher->last_meal_mutex, NULL);
-	pthread_mutex_init(&new_philosopher->state_mutex, NULL);
 	new_philosopher->thread = 0;
 	new_philosopher->name = generate_name(ft_rand());
 	new_philosopher->index = index;
 	new_philosopher->times = times;
 	new_philosopher->sync = sync;
 	new_philosopher->fork = new_fork;
-	new_philosopher->state = THINKING;
 	new_philosopher->last_meal_time = 0;
 	new_philosopher->ready_to_eat = false;
 	new_philosopher->finished = false;
@@ -126,4 +124,33 @@ void	table_add_back(
 	current->next = new_philosopher;
 	new_philosopher->next = NULL;
 	new_philosopher->previous = current;
+}
+
+void	clear_table(t_philosopher **table)
+{
+	t_philosopher	*philosopher;
+	t_philosopher	*tmp;
+	int				i;
+	int				count;
+
+	if (!table || !*table)
+		return ;
+	philosopher = *table;
+	count = philosopher->times->philosopher_amount;
+	i = 0;
+	while (i < count)
+	{
+		tmp = philosopher->next;
+		pthread_mutex_destroy(&philosopher->last_meal_mutex);
+		pthread_mutex_destroy(&philosopher->fork->mutex);
+		free(philosopher->name);
+		free(philosopher->fork);
+		free(philosopher);
+		philosopher = tmp;
+		i++;
+	}
+	free((*table)->times);
+	pthread_mutex_destroy(&(*table)->sync->sync_mutex);
+	free((*table)->sync);
+	*table = NULL;
 }

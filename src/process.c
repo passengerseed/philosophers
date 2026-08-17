@@ -6,14 +6,11 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 17:41:20 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 17:58:37 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-
-// printf("[ %lld ms ]	%s has taken a fork\n", timer(), philosopher->name);
 
 int	take_forks_and_eat(t_philosopher *philosopher)
 {
@@ -59,11 +56,19 @@ int	nap(t_philosopher *philosopher)
 void	*lifecycle(void	*arg)
 {
 	t_philosopher	*philosopher;
+	int				i;
 
 	philosopher = (t_philosopher *)arg;
-	take_forks_and_eat(philosopher);
-	nap(philosopher);
-	printf("[ %lld ms ]	%s is thinking\n", timer(), philosopher->name);
+	i = 0;
+	while (1)
+	{
+		take_forks_and_eat(philosopher);
+		nap(philosopher);
+		printf("[ %lld ms ]	%s is thinking\n", timer(), philosopher->name);
+		i++;
+		if (i == philosopher->times->times_eating)
+			break ;
+	}
 	pthread_mutex_lock(&philosopher->sync->sync_mutex);
 	philosopher->sync->ready_count++;
 	pthread_mutex_unlock(&philosopher->sync->sync_mutex);

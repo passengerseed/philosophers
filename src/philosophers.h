@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 17:29:00 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 18:10:34 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,6 @@
 # define COLOR_BLUE    "\x1b[34m"
 # define COLOR_RESET   "\x1b[0m"
 
-typedef enum state {
-	INIT,		//0
-	EATING,		//1
-	SLEEPING,	//2
-	THINKING,	//3
-	DEAD		//4
-}	State;
-
 typedef struct s_sync {
 	pthread_mutex_t	sync_mutex;
 	int				ready_count;
@@ -55,8 +47,6 @@ typedef struct s_philosopher {
 	int						index;
 	t_times					*times;
 	t_sync					*sync;
-	State					state;
-	pthread_mutex_t			state_mutex;
 	long long				last_meal_time;
 	pthread_mutex_t			last_meal_mutex;
 	bool					ready_to_eat;
@@ -82,8 +72,7 @@ t_philosopher	*init_philosopher(t_times *times, t_sync *sync, int index);
 t_philosopher	*init_table(const char **argv, t_times *times);
 void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
 t_philosopher	*table_last(t_philosopher *philosopher);
-// void			clear_table(t_philosopher **table);
-
+void			clear_table(t_philosopher **table);
 /* process.c */
 void			*lifecycle(void	*arg);
 int				take_forks_and_eat(t_philosopher *philosopher);

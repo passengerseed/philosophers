@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 17:41:21 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/17 18:26:29 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	*monitor(void *arg)
 		if (timer() - philosopher->last_meal_time >= philosopher->times->time_to_die)
 		{
 			printf("[ %lld ms ]	%s has died!\n", timer(), philosopher->name);
+			clear_table(&philosopher);
 			exit(EXIT_FAILURE);
 		}
 		pthread_mutex_unlock(&philosopher->last_meal_mutex);
@@ -71,12 +72,12 @@ int	main(int argc, const char **argv)
 	table = init_table(argv, times);
 	if (!table)
 		return (free(times), error("couldn't initialize table"), EXIT_FAILURE);
-	print_table(table);
+	// print_table(table);
 	head = table;
 	i = times->philosopher_amount;
 	while (i > 0)
 	{
-		// usleep(1000 * (times->philosopher_amount - i));
+		usleep(1000);
 		pthread_create(&table->thread, NULL, lifecycle, table);
 		table = table->next;
 		i--;
@@ -90,7 +91,6 @@ int	main(int argc, const char **argv)
 		table = table->next;
 		i--;
 	}
-	// clear_table(&table);
-	free(times);
+	clear_table(&table);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 18:23:06 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/18 17:28:12 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,15 @@ t_times	*init_times(
 )
 {
 	t_times	*new_times;
+	int		i;
 
+	i = 1;
+	while (argv[i])
+	{
+		if (ft_atoi(argv[i]) < 0)
+			return (NULL);
+		i++;
+	}
 	new_times = malloc(sizeof(t_times));
 	if (!new_times)
 		return (NULL);
@@ -51,12 +59,12 @@ t_philosopher	*init_philosopher(
 	pthread_mutex_init(&new_fork->mutex, NULL);
 	pthread_mutex_init(&new_philosopher->last_meal_mutex, NULL);
 	new_philosopher->thread = 0;
-	new_philosopher->name = generate_name(ft_rand());
+	// new_philosopher->name = generate_name(ft_rand());
+	new_philosopher->name = ft_itoa(index);
 	new_philosopher->index = index;
 	new_philosopher->times = times;
 	new_philosopher->sync = sync;
 	new_philosopher->fork = new_fork;
-	new_philosopher->last_meal_time = 0;
 	new_philosopher->ready_to_eat = false;
 	new_philosopher->finished = false;
 	new_philosopher->next = NULL;
@@ -70,6 +78,9 @@ t_sync	*init_sync(void)
 
 	new_sync = malloc(sizeof(t_sync));
 	pthread_mutex_init(&new_sync->sync_mutex, NULL);
+	pthread_mutex_init(&new_sync->print_mutex, NULL);
+	pthread_mutex_init(&new_sync->state_mutex, NULL);
+	new_sync->dead = false;
 	new_sync->ready_count = 0;
 	return (new_sync);
 }
@@ -130,6 +141,8 @@ void	clear_table(t_philosopher **table)
 {
 	t_philosopher	*philosopher;
 	t_philosopher	*tmp;
+	t_times			*times;
+	t_sync			*sync;
 	int				i;
 	int				count;
 
@@ -137,6 +150,8 @@ void	clear_table(t_philosopher **table)
 		return ;
 	philosopher = *table;
 	count = philosopher->times->philosopher_amount;
+	times = philosopher->times;
+	sync = philosopher->sync;
 	i = 0;
 	while (i < count)
 	{
@@ -149,8 +164,10 @@ void	clear_table(t_philosopher **table)
 		philosopher = tmp;
 		i++;
 	}
-	free((*table)->times);
-	pthread_mutex_destroy(&(*table)->sync->sync_mutex);
-	free((*table)->sync);
+	free(times);
+	pthread_mutex_destroy(&sync->sync_mutex);
+	pthread_mutex_destroy(&sync->print_mutex);
+	pthread_mutex_destroy(&sync->state_mutex);
+	free(sync);
 	*table = NULL;
 }

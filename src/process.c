@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 17:58:37 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/18 18:32:05 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,12 @@ int	take_forks_and_eat(t_philosopher *philosopher)
 	pthread_mutex_t	*second;
 	pthread_mutex_t	*tmp;
 
+	if (is_dead(philosopher))
+		return (1);
 	first = &philosopher->fork->mutex;
 	second = &philosopher->previous->fork->mutex;
-	tmp = NULL;
+	if (first == second)
+		return (1);
 	if (first > second)
 	{
 		tmp = first;
@@ -28,18 +31,26 @@ int	take_forks_and_eat(t_philosopher *philosopher)
 		second = tmp;
 	}
 	pthread_mutex_lock(first);
-	printf("[ %lld ms ]	%s has taken a fork\n", timer(), philosopher->name);
+	if (is_dead(philosopher))
+	{
+		pthread_mutex_unlock(first);
+		return (1);
+	}
+	print_lock(philosopher, "has taken a fork");
 	pthread_mutex_lock(second);
-	printf("[ %lld ms ]	%s has taken a fork\n", timer(), philosopher->name);
-	printf("[ %lld ms ]	%s is eating\n", timer(), philosopher->name);
+	if (is_dead(philosopher))
+	{
+		pthread_mutex_unlock(first);
+		pthread_mutex_unlock(second);
+		return (1);
+	}
+	print_lock(philosopher, "has taken a fork");
+	print_lock(philosopher, "is eating");
 	pthread_mutex_lock(&philosopher->last_meal_mutex);
 	philosopher->last_meal_time = timer();
 	pthread_mutex_unlock(&philosopher->last_meal_mutex);
 	usleep(philosopher->times->time_to_eat * 1000);
-	pthread_mutex_lock(&philosopher->last_meal_mutex);
-	philosopher->last_meal_time = timer();
-	pthread_mutex_unlock(&philosopher->last_meal_mutex);
-	printf("[ %lld ms ]	%s has finished eating\n", timer(), philosopher->name);
+	print_lock(philosopher, "has finished eating");
 	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
 	return (0);
@@ -47,10 +58,22 @@ int	take_forks_and_eat(t_philosopher *philosopher)
 
 int	nap(t_philosopher *philosopher)
 {
-	printf("[ %lld ms ]	%s is sleeping\n", timer(), philosopher->name);
+	if (is_dead(philosopher))
+		return (1);
+	print_lock(philosopher, "is sleeping");
 	usleep(philosopher->times->time_to_sleep * 1000);
-	printf("[ %lld ms ]	%s has finished sleeping\n", timer(), philosopher->name);
+	print_lock(philosopher, "has finished sleeping");
 	return (0);
+}
+
+bool	is_dead(t_philosopher *philosopher)
+{
+	bool	dead;
+
+	pthread_mutex_lock(&philosopher->sync->state_mutex);
+	dead = philosopher->sync->dead;
+	pthread_mutex_unlock(&philosopher->sync->state_mutex);
+	return (dead);
 }
 
 void	*lifecycle(void	*arg)
@@ -59,12 +82,19 @@ void	*lifecycle(void	*arg)
 	int				i;
 
 	philosopher = (t_philosopher *)arg;
+	pthread_mutex_lock(&philosopher->last_meal_mutex);
+	philosopher->last_meal_time = timer();
+	pthread_mutex_unlock(&philosopher->last_meal_mutex);
 	i = 0;
 	while (1)
 	{
-		take_forks_and_eat(philosopher);
-		nap(philosopher);
-		printf("[ %lld ms ]	%s is thinking\n", timer(), philosopher->name);
+		if (take_forks_and_eat(philosopher))
+			break ;
+		if (nap(philosopher))
+			break ;
+		if (is_dead(philosopher))
+			break ;
+		print_lock(philosopher, "is thinking");
 		i++;
 		if (i == philosopher->times->times_eating)
 			break ;

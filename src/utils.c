@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:12:52 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/14 18:25:56 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/18 16:15:14 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,3 +72,11 @@ int	ft_rand(void)
 	return (rand_state);
 }
 
+void	print_lock(t_philosopher *philosopher, char *str)
+{	
+	if (is_dead(philosopher))
+		return ;
+	pthread_mutex_lock(&philosopher->sync->print_mutex);
+	printf("[ %lld ms ]	%s %s\n", timer(), philosopher->name, str);
+	pthread_mutex_unlock(&philosopher->sync->print_mutex);
+}

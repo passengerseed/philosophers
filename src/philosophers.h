@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 18:10:34 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/18 16:15:11 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@
 
 typedef struct s_sync {
 	pthread_mutex_t	sync_mutex;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	state_mutex;
+	bool			dead;
 	int				ready_count;
 }	t_sync;
 
@@ -73,15 +76,18 @@ t_philosopher	*init_table(const char **argv, t_times *times);
 void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
 t_philosopher	*table_last(t_philosopher *philosopher);
 void			clear_table(t_philosopher **table);
+
 /* process.c */
 void			*lifecycle(void	*arg);
 int				take_forks_and_eat(t_philosopher *philosopher);
 int				nap(t_philosopher *philosopher);
+bool			is_dead(t_philosopher *philosopher);
 
 /* utils.c */
 size_t			ft_strlen(const char *str);
 int				ft_atoi(const char *str);
 int				ft_rand(void);
+void			print_lock(t_philosopher *philosopher, char *str);
 
 /* namegen.c */
 size_t			ft_count(int n);

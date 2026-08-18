@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/17 18:26:29 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/18 18:32:04 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,42 @@ void	error(char *str)
 void	*monitor(void *arg)
 {
 	t_philosopher	*philosopher;
+	t_philosopher	*head;
+	long long		last_meal;
+	int				i;
 
-	philosopher = (t_philosopher *)arg;
+	head = (t_philosopher *)arg;
 	while (1)
 	{
-		pthread_mutex_lock(&philosopher->sync->sync_mutex);
-		if (philosopher->sync->ready_count == philosopher->times->philosopher_amount)
-			break ;
-		pthread_mutex_unlock(&philosopher->sync->sync_mutex);
-		pthread_mutex_lock(&philosopher->last_meal_mutex);
-		if (timer() - philosopher->last_meal_time >= philosopher->times->time_to_die)
+		pthread_mutex_lock(&head->sync->sync_mutex);
+		if (head->sync->ready_count >= head->times->philosopher_amount)
 		{
-			printf("[ %lld ms ]	%s has died!\n", timer(), philosopher->name);
-			clear_table(&philosopher);
-			exit(EXIT_FAILURE);
+			pthread_mutex_unlock(&head->sync->sync_mutex);
+			return (NULL);
 		}
-		pthread_mutex_unlock(&philosopher->last_meal_mutex);
-
+		pthread_mutex_unlock(&head->sync->sync_mutex);
+		philosopher = head;
+		i = 0;
+		while (i < head->times->philosopher_amount)
+		{
+			pthread_mutex_lock(&philosopher->last_meal_mutex);
+			last_meal = philosopher->last_meal_time;
+			pthread_mutex_unlock(&philosopher->last_meal_mutex);
+			if (!is_dead(philosopher) && timer() - last_meal >= philosopher->times->time_to_die)
+			{
+				pthread_mutex_lock(&philosopher->sync->state_mutex);
+				philosopher->sync->dead = true;
+				printf("[ %lld ms ]\t%s has died\n", timer(), philosopher->name);
+				pthread_mutex_unlock(&philosopher->sync->state_mutex);
+				return (NULL);
+			}
+			philosopher = philosopher->next;
+			i++;
+		}
+		usleep(1000);
 	}
 	printf("SIMULATION FINISHED!");
-	return (0);
+	return (NULL);
 }
 
 int	main(int argc, const char **argv)
@@ -82,15 +98,25 @@ int	main(int argc, const char **argv)
 		table = table->next;
 		i--;
 	}
-	panopticon = pthread_create(&panopticon, NULL, monitor, table);
+	pthread_create(&panopticon, NULL, monitor, head);
 	table = head;
 	i = times->philosopher_amount;
+	if (i == 1)
+	{
+		usleep(times->time_to_die * 1000);
+		printf("[ %lld ms ]\t%s has died\n", timer(), head->name);
+		pthread_join(head->thread, NULL);
+		pthread_join(panopticon, NULL);
+		clear_table(&table);
+		return (EXIT_SUCCESS);
+	}
 	while (i > 0)
 	{
 		pthread_join(table->thread, NULL);
 		table = table->next;
 		i--;
 	}
+	pthread_join(panopticon, NULL);
 	clear_table(&table);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/18 17:28:12 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/21 17:26:12 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ t_philosopher	*init_philosopher(
 	pthread_mutex_init(&new_fork->mutex, NULL);
 	pthread_mutex_init(&new_philosopher->last_meal_mutex, NULL);
 	new_philosopher->thread = 0;
-	// new_philosopher->name = generate_name(ft_rand());
 	new_philosopher->name = ft_itoa(index);
 	new_philosopher->index = index;
 	new_philosopher->times = times;
@@ -137,13 +136,15 @@ void	table_add_back(
 	new_philosopher->previous = current;
 }
 
-void	clear_table(t_philosopher **table)
+void	clear_table(
+	t_philosopher **table,
+	int i
+)
 {
 	t_philosopher	*philosopher;
 	t_philosopher	*tmp;
 	t_times			*times;
 	t_sync			*sync;
-	int				i;
 	int				count;
 
 	if (!table || !*table)

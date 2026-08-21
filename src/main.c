@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/18 18:32:04 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:24:32 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,36 @@ long long	timer(void)
 	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms);
 }
 
-void	error(char *str)
+int	monitor_loop(t_philosopher *philosopher)
 {
-	printf("ERROR: %s", str);
+	long long	last_meal;
+	int			i;
+
+	i = 0;
+	while (i < philosopher->times->philosopher_amount)
+	{
+		pthread_mutex_lock(&philosopher->last_meal_mutex);
+		last_meal = philosopher->last_meal_time;
+		pthread_mutex_unlock(&philosopher->last_meal_mutex);
+		if (!is_dead(philosopher) && timer() - last_meal
+			>= philosopher->times->time_to_die)
+		{
+			pthread_mutex_lock(&philosopher->sync->state_mutex);
+			philosopher->sync->dead = true;
+			printf("[ %lld ms ]\t%s has died\n", timer(), philosopher->name);
+			pthread_mutex_unlock(&philosopher->sync->state_mutex);
+			return (1);
+		}
+		philosopher = philosopher->next;
+		i++;
+	}
+	return (0);
 }
 
 void	*monitor(void *arg)
 {
 	t_philosopher	*philosopher;
 	t_philosopher	*head;
-	long long		last_meal;
-	int				i;
 
 	head = (t_philosopher *)arg;
 	while (1)
@@ -49,23 +68,8 @@ void	*monitor(void *arg)
 		}
 		pthread_mutex_unlock(&head->sync->sync_mutex);
 		philosopher = head;
-		i = 0;
-		while (i < head->times->philosopher_amount)
-		{
-			pthread_mutex_lock(&philosopher->last_meal_mutex);
-			last_meal = philosopher->last_meal_time;
-			pthread_mutex_unlock(&philosopher->last_meal_mutex);
-			if (!is_dead(philosopher) && timer() - last_meal >= philosopher->times->time_to_die)
-			{
-				pthread_mutex_lock(&philosopher->sync->state_mutex);
-				philosopher->sync->dead = true;
-				printf("[ %lld ms ]\t%s has died\n", timer(), philosopher->name);
-				pthread_mutex_unlock(&philosopher->sync->state_mutex);
-				return (NULL);
-			}
-			philosopher = philosopher->next;
-			i++;
-		}
+		if (monitor_loop(philosopher) == 1)
+			return (NULL);
 		usleep(1000);
 	}
 	printf("SIMULATION FINISHED!");
@@ -81,13 +85,13 @@ int	main(int argc, const char **argv)
 	int				i;
 
 	if (argc < 5)
-		return (error("not enough arguments"), EXIT_FAILURE);
+		return (printf("not enough arguments"), EXIT_FAILURE);
 	times = init_times(argc, argv);
 	if (!times)
-		return (error("couldn't initialize times struct"), EXIT_FAILURE);
+		return (printf("couldn't initialize times struct"), EXIT_FAILURE);
 	table = init_table(argv, times);
 	if (!table)
-		return (free(times), error("couldn't initialize table"), EXIT_FAILURE);
+		return (free(times), printf("couldn't initialize table"), EXIT_FAILURE);
 	// print_table(table);
 	head = table;
 	i = times->philosopher_amount;
@@ -107,7 +111,7 @@ int	main(int argc, const char **argv)
 		printf("[ %lld ms ]\t%s has died\n", timer(), head->name);
 		pthread_join(head->thread, NULL);
 		pthread_join(panopticon, NULL);
-		clear_table(&table);
+		clear_table(&table, 0);
 		return (EXIT_SUCCESS);
 	}
 	while (i > 0)
@@ -117,6 +121,6 @@ int	main(int argc, const char **argv)
 		i--;
 	}
 	pthread_join(panopticon, NULL);
-	clear_table(&table);
+	clear_table(&table, 0);
 	return (EXIT_SUCCESS);
 }

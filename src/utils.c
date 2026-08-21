@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:12:52 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/18 16:15:14 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:24:32 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,21 +62,75 @@ int	ft_atoi(const char *str)
 	return (n * sign);
 }
 
-int	ft_rand(void)
+size_t	ft_count(int n)
 {
-	static int	rand_state;
+	size_t	n_size;
 
-	if (!rand_state)
-		rand_state = 1;
-	rand_state = (rand_state * 1103515245 + 12345) & 0x7fffffff;
-	return (rand_state);
+	n_size = 1;
+	if (n < 0)
+	{
+		n *= -1;
+		n_size++;
+	}
+	while (n >= 10)
+	{
+		n /= 10;
+		n_size++;
+	}
+	return (n_size);
+}
+
+char	*ft_strdup(const char *s)
+{
+	size_t	i;
+	char	*newstr;
+
+	i = 0;
+	newstr = malloc((sizeof(char) * ft_strlen(s)) + 1);
+	if (!newstr)
+		return (0);
+	while (s[i])
+	{
+		newstr[i] = s[i];
+		i++;
+	}
+	newstr[i] = '\0';
+	return (newstr);
+}
+
+char	*ft_itoa(int n)
+{
+	size_t	newstr_size;
+	char	*newstr;
+
+	if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	if (n == 0)
+		return (ft_strdup("0"));
+	newstr_size = ft_count(n);
+	newstr = malloc(sizeof(char) * (newstr_size + 1));
+	if (!newstr)
+		return (0);
+	newstr[newstr_size] = '\0';
+	newstr_size--;
+	if (n < 0)
+	{
+		n *= -1;
+		newstr[0] = '-';
+	}
+	while (n > 0)
+	{
+		newstr[newstr_size] = (n % 10) + '0';
+		n /= 10;
+		newstr_size--;
+	}
+	return (newstr);
 }
 
 void	print_lock(t_philosopher *philosopher, char *str)
-{	
-	if (is_dead(philosopher))
-		return ;
+{
 	pthread_mutex_lock(&philosopher->sync->print_mutex);
-	printf("[ %lld ms ]	%s %s\n", timer(), philosopher->name, str);
+	if (!is_dead(philosopher))	
+		printf("[ %lld ms ]	%s %s\n", timer(), philosopher->name, str);
 	pthread_mutex_unlock(&philosopher->sync->print_mutex);
 }

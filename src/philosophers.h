@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/18 16:15:11 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/21 17:37:33 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,18 @@ typedef struct s_fork {
 
 /* main.c */
 long long		timer(void);
-void			error(char *str);
 void			*monitor(void *arg);
+int				monitor_loop(t_philosopher *philosopher);
 
 /* init.c */
 t_sync			*init_sync(void);
 t_times			*init_times(int argc, const char **argv);
 t_philosopher	*init_philosopher(t_times *times, t_sync *sync, int index);
 t_philosopher	*init_table(const char **argv, t_times *times);
-void			table_add_back(t_philosopher **table, t_philosopher *new_philosopher);
+void			table_add_back(t_philosopher **table,
+					t_philosopher *new_philosopher);
 t_philosopher	*table_last(t_philosopher *philosopher);
-void			clear_table(t_philosopher **table);
+void			clear_table(t_philosopher **table, int i);
 
 /* process.c */
 void			*lifecycle(void	*arg);
@@ -86,15 +87,10 @@ bool			is_dead(t_philosopher *philosopher);
 /* utils.c */
 size_t			ft_strlen(const char *str);
 int				ft_atoi(const char *str);
-int				ft_rand(void);
-void			print_lock(t_philosopher *philosopher, char *str);
-
-/* namegen.c */
 size_t			ft_count(int n);
-char			*ft_itoa(int n);
 char			*ft_strdup(const char *s);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*generate_name(int rand);
+char			*ft_itoa(int n);
+void			print_lock(t_philosopher *philosopher, char *str);
 
 /* debug.c */
 void			print_table(t_philosopher *philosopher);

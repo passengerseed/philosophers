@@ -6,45 +6,55 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/18 18:32:05 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:02:56 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+int	take_forks(
+	t_philosopher *philosopher,
+	pthread_mutex_t **first,
+	pthread_mutex_t **second
+)
+{
+	pthread_mutex_t	*tmp;
+
+	if (first > second)
+	{
+		tmp = *first;
+		*first = *second;
+		*second = tmp;
+	}
+	pthread_mutex_lock(*first);
+	if (is_dead(philosopher))
+	{
+		pthread_mutex_unlock(*first);
+		return (1);
+	}
+	print_lock(philosopher, "has taken a fork");
+	pthread_mutex_lock(*second);
+	if (is_dead(philosopher))
+	{
+		pthread_mutex_unlock(*first);
+		pthread_mutex_unlock(*second);
+		return (1);
+	}
+	print_lock(philosopher, "has taken a fork");
+	return (0);
+}
+
 int	take_forks_and_eat(t_philosopher *philosopher)
 {
 	pthread_mutex_t	*first;
 	pthread_mutex_t	*second;
-	pthread_mutex_t	*tmp;
 
 	if (is_dead(philosopher))
 		return (1);
 	first = &philosopher->fork->mutex;
 	second = &philosopher->previous->fork->mutex;
-	if (first == second)
+	if (first == second || take_forks(philosopher, &first, &second) == 1)
 		return (1);
-	if (first > second)
-	{
-		tmp = first;
-		first = second;
-		second = tmp;
-	}
-	pthread_mutex_lock(first);
-	if (is_dead(philosopher))
-	{
-		pthread_mutex_unlock(first);
-		return (1);
-	}
-	print_lock(philosopher, "has taken a fork");
-	pthread_mutex_lock(second);
-	if (is_dead(philosopher))
-	{
-		pthread_mutex_unlock(first);
-		pthread_mutex_unlock(second);
-		return (1);
-	}
-	print_lock(philosopher, "has taken a fork");
 	print_lock(philosopher, "is eating");
 	pthread_mutex_lock(&philosopher->last_meal_mutex);
 	philosopher->last_meal_time = timer();

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/21 18:24:32 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/25 17:36:28 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	*monitor(void *arg)
 		philosopher = head;
 		if (monitor_loop(philosopher) == 1)
 			return (NULL);
-		usleep(1000);
+		ft_usleep(1);
 	}
 	printf("SIMULATION FINISHED!");
 	return (NULL);
@@ -97,7 +97,7 @@ int	main(int argc, const char **argv)
 	i = times->philosopher_amount;
 	while (i > 0)
 	{
-		usleep(1000);
+		ft_usleep(1);
 		pthread_create(&table->thread, NULL, lifecycle, table);
 		table = table->next;
 		i--;
@@ -107,7 +107,7 @@ int	main(int argc, const char **argv)
 	i = times->philosopher_amount;
 	if (i == 1)
 	{
-		usleep(times->time_to_die * 1000);
+		ft_usleep(times->time_to_die);
 		printf("[ %lld ms ]\t%s has died\n", timer(), head->name);
 		pthread_join(head->thread, NULL);
 		pthread_join(panopticon, NULL);

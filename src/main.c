@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/25 17:36:28 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/28 17:12:13 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	monitor_loop(t_philosopher *philosopher)
 		pthread_mutex_lock(&philosopher->last_meal_mutex);
 		last_meal = philosopher->last_meal_time;
 		pthread_mutex_unlock(&philosopher->last_meal_mutex);
-		if (!is_dead(philosopher) && timer() - last_meal
+		if (!philosopher->finished && !is_dead(philosopher) && timer() - last_meal
 			>= philosopher->times->time_to_die)
 		{
 			pthread_mutex_lock(&philosopher->sync->state_mutex);
@@ -70,7 +70,7 @@ void	*monitor(void *arg)
 		philosopher = head;
 		if (monitor_loop(philosopher) == 1)
 			return (NULL);
-		ft_usleep(1);
+		usleep(1000);
 	}
 	printf("SIMULATION FINISHED!");
 	return (NULL);
@@ -97,7 +97,6 @@ int	main(int argc, const char **argv)
 	i = times->philosopher_amount;
 	while (i > 0)
 	{
-		ft_usleep(1);
 		pthread_create(&table->thread, NULL, lifecycle, table);
 		table = table->next;
 		i--;
@@ -105,15 +104,17 @@ int	main(int argc, const char **argv)
 	pthread_create(&panopticon, NULL, monitor, head);
 	table = head;
 	i = times->philosopher_amount;
+	// one philosopher case
 	if (i == 1)
 	{
-		ft_usleep(times->time_to_die);
+		usleep(times->time_to_die);
 		printf("[ %lld ms ]\t%s has died\n", timer(), head->name);
 		pthread_join(head->thread, NULL);
 		pthread_join(panopticon, NULL);
 		clear_table(&table, 0);
 		return (EXIT_SUCCESS);
 	}
+	//
 	while (i > 0)
 	{
 		pthread_join(table->thread, NULL);

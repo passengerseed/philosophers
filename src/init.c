@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/21 17:26:12 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/28 17:03:55 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ t_philosopher	*init_philosopher(
 	new_philosopher->thread = 0;
 	new_philosopher->name = ft_itoa(index);
 	new_philosopher->index = index;
+	// new_philosopher->last_meal_time = 0;
 	new_philosopher->times = times;
 	new_philosopher->sync = sync;
 	new_philosopher->fork = new_fork;

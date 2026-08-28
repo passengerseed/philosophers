@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/25 15:40:29 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/28 15:10:54 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ size_t			ft_count(int n);
 char			*ft_strdup(const char *s);
 char			*ft_itoa(int n);
 void			print_lock(t_philosopher *philosopher, char *str);
-void			ft_usleep(long long duration);
+void			ft_usleep(long long duration, t_philosopher *philosopher);
 
 /* debug.c */
 void			print_table(t_philosopher *philosopher);

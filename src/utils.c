@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:12:52 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/25 15:55:47 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/28 17:05:01 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,13 +135,15 @@ void	print_lock(t_philosopher *philosopher, char *str)
 	pthread_mutex_unlock(&philosopher->sync->print_mutex);
 }
 
-void	ft_usleep(long long duration)
+void	ft_usleep(long long duration, t_philosopher *philosopher)
 {
 	long long	start;
 
 	start = timer();
 	while (timer() - start < duration)
 	{
+		if (is_dead(philosopher))
+			return ;
 		usleep(500);
 	}
 }

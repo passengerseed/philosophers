@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 17:04:58 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/25 17:31:38 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/28 17:15:05 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	take_forks_and_eat(t_philosopher *philosopher)
 	pthread_mutex_lock(&philosopher->last_meal_mutex);
 	philosopher->last_meal_time = timer();
 	pthread_mutex_unlock(&philosopher->last_meal_mutex);
-	ft_usleep(philosopher->times->time_to_eat);
+	ft_usleep(philosopher->times->time_to_eat, philosopher);
 	print_lock(philosopher, "has finished eating");
 	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
@@ -71,7 +71,7 @@ int	nap(t_philosopher *philosopher)
 	if (is_dead(philosopher))
 		return (1);
 	print_lock(philosopher, "is sleeping");
-	ft_usleep(philosopher->times->time_to_sleep);
+	ft_usleep(philosopher->times->time_to_sleep, philosopher);
 	print_lock(philosopher, "has finished sleeping");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 17:00:47 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 17:56:43 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 19:58:59 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,24 @@ bool	is_all_finished(t_philosopher *philosopher)
 	finished_count = philosopher->sync->finished_count;
 	pthread_mutex_unlock(&philosopher->sync->finished_mutex);
 	return (finished_count == philosopher->times->philosopher_amount);
+}
+
+bool	is_all_ready(t_philosopher *philosopher)
+{
+	int	ready_count;
+
+	pthread_mutex_lock(&philosopher->sync->ready_mutex);
+	ready_count = philosopher->sync->ready_count;
+	pthread_mutex_unlock(&philosopher->sync->ready_mutex);
+	return (ready_count == philosopher->times->philosopher_amount);
+}
+
+bool	has_started(t_philosopher *philosopher)
+{
+	bool	started;
+
+	pthread_mutex_lock(&philosopher->started_mutex);
+	started = philosopher->started;
+	pthread_mutex_unlock(&philosopher->started_mutex);
+	return (started);
 }

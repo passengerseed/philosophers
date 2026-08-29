@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 17:18:21 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 18:24:13 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 20:05:57 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	*lifecycle(void	*arg)
 	int				i;
 
 	philosopher = (t_philosopher *)arg;
-	update_last_meal_time(philosopher);
+	starting_block(philosopher);
 	i = 0;
 	while (1)
 	{

@@ -6,7 +6,7 @@
 #    By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/10 15:54:28 by lrouchon          #+#    #+#              #
-#    Updated: 2026/08/29 17:49:54 by lrouchon         ###   ########.fr        #
+#    Updated: 2026/08/29 20:06:46 by lrouchon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,11 @@ NAME = philo
 
 SRC = main.c \
 	process.c \
+	pre_process.c \
 	forks.c \
 	init.c \
-	ft_utils.c \
+	ft_utils_1.c \
+	ft_utils_2.c \
 	philo_utils.c \
 	checks.c \
 	exit.c

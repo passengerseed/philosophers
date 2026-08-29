@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 16:49:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 18:37:34 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 19:46:54 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,15 @@ t_philosopher	*init_philosopher(
 		return (free(new_philosopher), NULL);
 	pthread_mutex_init(&new_fork->fork_mutex, NULL);
 	pthread_mutex_init(&new_philosopher->last_meal_mutex, NULL);
+	pthread_mutex_init(&new_philosopher->started_mutex, NULL);
 	new_philosopher->thread = 0;
-	new_philosopher->name = ft_itoa(index + 1);
-	new_philosopher->index = index;
 	new_philosopher->times = times;
 	new_philosopher->sync = sync;
 	new_philosopher->fork = new_fork;
+	new_philosopher->name = ft_itoa(index + 1);
+	new_philosopher->index = index;
+	new_philosopher->last_meal_time = 0;
+	new_philosopher->started = false;
 	new_philosopher->next = NULL;
 	new_philosopher->previous = NULL;
 	return (new_philosopher);
@@ -76,7 +79,10 @@ t_sync	*init_sync(void)
 	new_sync = malloc(sizeof(t_sync));
 	pthread_mutex_init(&new_sync->print_mutex, NULL);
 	pthread_mutex_init(&new_sync->dead_mutex, NULL);
+	pthread_mutex_init(&new_sync->ready_mutex, NULL);
+	pthread_mutex_init(&new_sync->finished_mutex, NULL);
 	new_sync->dead_flag = false;
+	new_sync->ready_count = 0;
 	new_sync->finished_count = 0;
 	return (new_sync);
 }

@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 17:06:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 18:46:26 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 20:12:07 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	monitor_loop(t_philosopher *philosopher)
 	i = 0;
 	while (i < philosopher->times->philosopher_amount)
 	{
-		if (!is_dead(philosopher) && timer() - get_last_meal_time(philosopher)
+		if (has_started(philosopher) && !is_dead(philosopher)
+			&& timer() - get_last_meal_time(philosopher)
 			>= philosopher->times->time_to_die)
 		{
 			pthread_mutex_lock(&philosopher->sync->dead_mutex);
@@ -59,12 +60,39 @@ void	lone_philosopher(t_philosopher *philosopher)
 	print_lock(philosopher, "died");
 }
 
+void	thread_create_and_wait(
+	t_philosopher *table,
+	t_times *times,
+	int i
+	)
+{
+	t_philosopher	*head;
+	pthread_t		panopticon;
+
+	head = table;
+	while (i > 0)
+	{
+		pthread_create(&table->thread, NULL, lifecycle, table);
+		table = table->next;
+		i--;
+	}
+	ready_loop(head);
+	pthread_create(&panopticon, NULL, monitor, head);
+	table = head;
+	i = times->philosopher_amount;
+	while (i > 0)
+	{
+		pthread_join(table->thread, NULL);
+		table = table->next;
+		i--;
+	}
+	pthread_join(panopticon, NULL);
+}
+
 int	main(int argc, const char **argv)
 {
 	t_times			*times;
 	t_philosopher	*table;
-	t_philosopher	*head;
-	pthread_t		panopticon;
 	int				i;
 
 	if (argc < 5)
@@ -77,30 +105,9 @@ int	main(int argc, const char **argv)
 		return (free(times), printf("couldn't initialize table"), EXIT_FAILURE);
 	i = times->philosopher_amount;
 	if (i != 1)
-	{
-		head = table;
-		while (i > 0)
-		{
-			usleep(1000);
-			pthread_create(&table->thread, NULL, lifecycle, table);
-			table = table->next;
-			i--;
-		}
-		pthread_create(&panopticon, NULL, monitor, head);
-		table = head;
-		i = times->philosopher_amount;
-		while (i > 0)
-		{
-			pthread_join(table->thread, NULL);
-			table = table->next;
-			i--;
-		}
-		pthread_join(panopticon, NULL);
-	}
+		thread_create_and_wait(table, times, i);
 	else
 		lone_philosopher(table);
-	clear_table(&table, 0);
+	clear_table(&table);
 	return (EXIT_SUCCESS);
 }
-
-//TODO: add ready check at start

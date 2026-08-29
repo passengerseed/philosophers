@@ -5,51 +5,33 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/10 15:55:35 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/25 17:36:28 by lrouchon         ###   ########.fr       */
+/*   Created: 2026/08/29 17:06:18 by lrouchon          #+#    #+#             */
+/*   Updated: 2026/08/29 18:38:29 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-long long	timer(void)
-{
-	static long long	start_time_ms;
-	struct timeval		tv;
-
-	if (!start_time_ms)
-	{
-		gettimeofday(&tv, NULL);
-		start_time_ms = tv.tv_sec * 1000LL + tv.tv_usec / 1000LL;
-	}
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms);
-}
-
 int	monitor_loop(t_philosopher *philosopher)
 {
-	long long	last_meal;
 	int			i;
 
 	i = 0;
 	while (i < philosopher->times->philosopher_amount)
 	{
-		pthread_mutex_lock(&philosopher->last_meal_mutex);
-		last_meal = philosopher->last_meal_time;
-		pthread_mutex_unlock(&philosopher->last_meal_mutex);
-		if (!is_dead(philosopher) && timer() - last_meal
+		if (!is_dead(philosopher) && timer() - get_last_meal_time(philosopher)
 			>= philosopher->times->time_to_die)
 		{
-			pthread_mutex_lock(&philosopher->sync->state_mutex);
-			philosopher->sync->dead = true;
+			pthread_mutex_lock(&philosopher->sync->dead_mutex);
+			philosopher->sync->dead_flag = true;
 			printf("[ %lld ms ]\t%s has died\n", timer(), philosopher->name);
-			pthread_mutex_unlock(&philosopher->sync->state_mutex);
-			return (1);
+			pthread_mutex_unlock(&philosopher->sync->dead_mutex);
+			return (0);
 		}
 		philosopher = philosopher->next;
 		i++;
 	}
-	return (0);
+	return (1);
 }
 
 void	*monitor(void *arg)
@@ -60,20 +42,21 @@ void	*monitor(void *arg)
 	head = (t_philosopher *)arg;
 	while (1)
 	{
-		pthread_mutex_lock(&head->sync->sync_mutex);
-		if (head->sync->ready_count >= head->times->philosopher_amount)
-		{
-			pthread_mutex_unlock(&head->sync->sync_mutex);
+		if (is_all_finished(head))
 			return (NULL);
-		}
-		pthread_mutex_unlock(&head->sync->sync_mutex);
 		philosopher = head;
-		if (monitor_loop(philosopher) == 1)
+		if (!monitor_loop(philosopher))
 			return (NULL);
-		ft_usleep(1);
+		usleep(1000);
 	}
 	printf("SIMULATION FINISHED!");
 	return (NULL);
+}
+
+void	lone_philosopher(t_philosopher *philosopher)
+{
+	usleep(philosopher->times->time_to_die * 1000);
+	print_lock(philosopher, "died");
 }
 
 int	main(int argc, const char **argv)
@@ -92,35 +75,32 @@ int	main(int argc, const char **argv)
 	table = init_table(argv, times);
 	if (!table)
 		return (free(times), printf("couldn't initialize table"), EXIT_FAILURE);
-	// print_table(table);
-	head = table;
 	i = times->philosopher_amount;
-	while (i > 0)
+	if (i != 1)
 	{
-		ft_usleep(1);
-		pthread_create(&table->thread, NULL, lifecycle, table);
-		table = table->next;
-		i--;
-	}
-	pthread_create(&panopticon, NULL, monitor, head);
-	table = head;
-	i = times->philosopher_amount;
-	if (i == 1)
-	{
-		ft_usleep(times->time_to_die);
-		printf("[ %lld ms ]\t%s has died\n", timer(), head->name);
-		pthread_join(head->thread, NULL);
+		head = table;
+		while (i > 0)
+		{
+			usleep(1000);
+			pthread_create(&table->thread, NULL, lifecycle, table);
+			table = table->next;
+			i--;
+		}
+		pthread_create(&panopticon, NULL, monitor, head);
+		table = head;
+		i = times->philosopher_amount;
+		while (i > 0)
+		{
+			pthread_join(table->thread, NULL);
+			table = table->next;
+			i--;
+		}
 		pthread_join(panopticon, NULL);
-		clear_table(&table, 0);
-		return (EXIT_SUCCESS);
 	}
-	while (i > 0)
-	{
-		pthread_join(table->thread, NULL);
-		table = table->next;
-		i--;
-	}
-	pthread_join(panopticon, NULL);
+	else
+		lone_philosopher(table);
 	clear_table(&table, 0);
 	return (EXIT_SUCCESS);
 }
+
+//TODO: add ready check at start

@@ -6,7 +6,7 @@
 #    By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/10 15:54:28 by lrouchon          #+#    #+#              #
-#    Updated: 2026/08/21 17:23:09 by lrouchon         ###   ########.fr        #
+#    Updated: 2026/08/29 17:49:54 by lrouchon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,14 +15,16 @@ CFLAGS = -Wall -Wextra -Werror -g3
 
 NAME = philo
 
-SRC_PATH = src/
-SRC = $(SRC_PATH)main.c \
-	$(SRC_PATH)init.c \
-	$(SRC_PATH)process.c \
-	$(SRC_PATH)utils.c \
-	$(SRC_PATH)debug.c
+SRC = main.c \
+	process.c \
+	forks.c \
+	init.c \
+	ft_utils.c \
+	philo_utils.c \
+	checks.c \
+	exit.c
 
-INCLUDES = $(SRC_PATH)philosophers.h
+INCLUDES = philosophers.h
 
 OBJ = $(SRC:.c=.o)
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/10 17:12:52 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/25 15:55:47 by lrouchon         ###   ########.fr       */
+/*   Created: 2026/08/29 16:55:23 by lrouchon          #+#    #+#             */
+/*   Updated: 2026/08/29 17:07:52 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,21 +127,3 @@ char	*ft_itoa(int n)
 	return (newstr);
 }
 
-void	print_lock(t_philosopher *philosopher, char *str)
-{
-	pthread_mutex_lock(&philosopher->sync->print_mutex);
-	if (!is_dead(philosopher))	
-		printf("[ %lld ms ]	%s %s\n", timer(), philosopher->name, str);
-	pthread_mutex_unlock(&philosopher->sync->print_mutex);
-}
-
-void	ft_usleep(long long duration)
-{
-	long long	start;
-
-	start = timer();
-	while (timer() - start < duration)
-	{
-		usleep(500);
-	}
-}

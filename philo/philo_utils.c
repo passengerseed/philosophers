@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 16:55:25 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 19:59:00 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 20:17:29 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ long long	timer(void)
 	return ((tv.tv_sec * 1000LL + tv.tv_usec / 1000LL) - start_time_ms);
 }
 
-void	print_lock(t_philosopher *philosopher, char *str)
+void	print_lock(t_philosopher *philosopher, char *str, char *color)
 {
 	pthread_mutex_lock(&philosopher->sync->print_mutex);
 	if (!is_dead(philosopher))
-		printf("[ %lld ms ]	%s %s\n", timer(), philosopher->name, str);
+		printf("[ %lld ms ]	%s%s %s%s\n", timer(), color, philosopher->name,
+			str, COLOR_RESET);
 	pthread_mutex_unlock(&philosopher->sync->print_mutex);
 }
 

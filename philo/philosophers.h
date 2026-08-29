@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 20:11:54 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 20:14:55 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,8 @@ char			*ft_itoa(int n);
 long long		timer(void);
 void			print_lock(
 					t_philosopher *philosopher,
-					char *str
+					char *str,
+					char *color
 					);
 void			ft_usleep(
 					long long duration,

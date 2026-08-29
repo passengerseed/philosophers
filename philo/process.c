@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 17:18:21 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 20:05:57 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 20:15:55 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ int	eat(t_philosopher *philosopher)
 	if (is_dead(philosopher))
 		return (release_forks(philosopher));
 	update_last_meal_time(philosopher);
-	print_lock(philosopher, "is eating");
+	print_lock(philosopher, "is eating", COLOR_YELLOW);
 	ft_usleep(philosopher->times->time_to_eat, philosopher);
-	print_lock(philosopher, "has finished eating");
+	print_lock(philosopher, "has finished eating", COLOR_YELLOW);
 	release_forks(philosopher);
 	return (1);
 }
@@ -35,9 +35,9 @@ int	nap(t_philosopher *philosopher)
 {
 	if (is_dead(philosopher))
 		return (0);
-	print_lock(philosopher, "is sleeping");
+	print_lock(philosopher, "is sleeping", COLOR_BLUE);
 	ft_usleep(philosopher->times->time_to_sleep, philosopher);
-	print_lock(philosopher, "has finished sleeping");
+	print_lock(philosopher, "has finished sleeping", COLOR_BLUE);
 	return (1);
 }
 
@@ -45,7 +45,7 @@ int	think(t_philosopher *philosopher)
 {
 	if (is_dead(philosopher))
 		return (0);
-	print_lock(philosopher, "is thinking");
+	print_lock(philosopher, "is thinking", COLOR_GREEN);
 	return (1);
 }
 

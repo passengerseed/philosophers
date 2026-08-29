@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 17:06:18 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 20:12:07 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/29 20:16:23 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	monitor_loop(t_philosopher *philosopher)
 		{
 			pthread_mutex_lock(&philosopher->sync->dead_mutex);
 			philosopher->sync->dead_flag = true;
-			printf("[ %lld ms ]\t%s has died\n", timer(), philosopher->name);
+			print_lock(philosopher, "died", COLOR_RED);
 			pthread_mutex_unlock(&philosopher->sync->dead_mutex);
 			return (0);
 		}
@@ -57,7 +57,7 @@ void	*monitor(void *arg)
 void	lone_philosopher(t_philosopher *philosopher)
 {
 	usleep(philosopher->times->time_to_die * 1000);
-	print_lock(philosopher, "died");
+	print_lock(philosopher, "died", COLOR_RED);
 }
 
 void	thread_create_and_wait(

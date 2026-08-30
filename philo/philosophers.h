@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:55:17 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 20:14:55 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/30 17:13:08 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,10 @@ int				ft_atoi(const char *str);
 size_t			ft_count(int n);
 char			*ft_strdup(const char *s);
 char			*ft_itoa(int n);
+void			ft_usleep(
+					long long duration,
+					t_philosopher *philosopher
+					);
 
 /* philo_utils.c */
 long long		timer(void);
@@ -132,10 +136,7 @@ void			print_lock(
 					char *str,
 					char *color
 					);
-void			ft_usleep(
-					long long duration,
-					t_philosopher *philosopher
-					);
+void			print_death(t_philosopher *philosopher);
 t_philosopher	*table_last(t_philosopher *philosopher);
 void			table_add_back(
 					t_philosopher **table,

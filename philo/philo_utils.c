@@ -6,7 +6,7 @@
 /*   By: lrouchon <lrouchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 16:55:25 by lrouchon          #+#    #+#             */
-/*   Updated: 2026/08/29 20:17:29 by lrouchon         ###   ########.fr       */
+/*   Updated: 2026/08/30 17:12:33 by lrouchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,15 @@ void	print_lock(t_philosopher *philosopher, char *str, char *color)
 	pthread_mutex_unlock(&philosopher->sync->print_mutex);
 }
 
-void	ft_usleep(long long duration, t_philosopher *philosopher)
+void	print_death(t_philosopher *philosopher)
 {
-	long long	start;
-
-	start = timer();
-	while (timer() - start < duration)
-	{
-		if (is_dead(philosopher))
-			return ;
-		usleep(500);
-	}
+	pthread_mutex_lock(&philosopher->sync->print_mutex);
+	pthread_mutex_lock(&philosopher->sync->dead_mutex);
+	philosopher->sync->dead_flag = true;
+	pthread_mutex_unlock(&philosopher->sync->dead_mutex);
+	printf("[ %lld ms ]	%s%s died%s\n", timer(), COLOR_RED, philosopher->name,
+		COLOR_RESET);
+	pthread_mutex_unlock(&philosopher->sync->print_mutex);
 }
 
 t_philosopher	*table_last(t_philosopher *philosopher)
